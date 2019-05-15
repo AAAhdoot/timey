@@ -233,8 +233,7 @@ class TimeSheet extends React.Component {
             }
             filtered={this.state.filtered}
             onFilteredChange={filtered => {
-              this.setState({ filtered });
-              this.calcTotal();
+              this.setState({ filtered }, this.calcTotal());
             }}
             className="-striped -highlight"
             showFilters="true"
