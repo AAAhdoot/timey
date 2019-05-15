@@ -37,6 +37,8 @@ class TimeSheet extends React.Component {
       endDate: null,
       focusedInput: null
     };
+
+    this.calcTotal = this.calcTotal.bind(this);
   }
 
   async componentDidMount() {
@@ -65,7 +67,7 @@ class TimeSheet extends React.Component {
     this.setState({ endDate: end });
   };
 
-  calcTotal = () => {
+  calcTotal() {
     let totalTime;
     if (this.reactTable) {
       totalTime = millisConverted(
@@ -80,8 +82,10 @@ class TimeSheet extends React.Component {
           )
       );
     }
+    if (!totalTime) debugger;
+    console.log('CALCULATING', totalTime);
     this.setState({ totalTime });
-  };
+  }
 
   columns = () => {
     return [
@@ -227,20 +231,11 @@ class TimeSheet extends React.Component {
                 .toLowerCase()
                 .includes(filter.value.toLowerCase())
             }
-            onFilteredChange={this.calcTotal}
-            // onFilteredChange={debounce(() => this.calcTotal(), 10000)}
-            // onFilteredChange={filter => {
-            //   console.log('FILLLLTERRRR', filter);
-            //   // const startFilter = filter.find(el => el.id === 'start');
-            //   // if (startFilter) {
-            //   //   if (startFilter.value) {
-            //   //     if (startFilter.value.endDate) {
-            //   //       console.log('recalculating');
-            //   //       this.calcTotal();
-            //   //     }
-            //   //   }
-            //   // }
-            // }}
+            filtered={this.state.filtered}
+            onFilteredChange={filtered => {
+              this.setState({ filtered });
+              this.calcTotal();
+            }}
             className="-striped -highlight"
             showFilters="true"
             getTheadFilterThProps={this.getTheadFilterThProps}
