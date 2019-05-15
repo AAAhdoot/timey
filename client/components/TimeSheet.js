@@ -1,23 +1,18 @@
 import React from 'react';
-// import 'react-dropdown/style.css';
-import 'react-dates/initialize';
-import 'react-table/react-table.css';
-import ReactTable from 'react-table';
-import { CSVLink } from 'react-csv';
 import Axios from 'axios';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import { CSVLink } from 'react-csv';
 import { millisConverted } from '../utils';
 import { Button } from 'reactstrap';
 
-import { DateRangePicker } from 'react-dates';
-import 'react-dates/lib/css/_datepicker.css';
+// import { DateRangePicker } from 'react-dates';
+// import 'react-dates/lib/css/_datepicker.css';
+// import 'react-dates/initialize';
+// import DRP from './DRP';
 
 import Picker from './Picker';
-
 import 'react-datepicker/dist/react-datepicker.css';
-
-var debounce = require('lodash.debounce');
-
-import DRP from './DRP';
 
 import moment from 'moment';
 
@@ -51,14 +46,6 @@ class TimeSheet extends React.Component {
     this.calcTotal();
   }
 
-  // handleChange = ({ startDate, endDate }) => {
-  //   console.log('IN HANDLESTARTCHANGE');
-  //   this.setState({
-  //     startDate,
-  //     endDate
-  //   });
-  // };
-
   handleStartChange = start => {
     this.setState({ startDate: start });
   };
@@ -82,8 +69,6 @@ class TimeSheet extends React.Component {
           )
       );
     }
-    if (!totalTime) debugger;
-    console.log('CALCULATING', totalTime);
     this.setState({ totalTime });
   }
 
@@ -104,7 +89,6 @@ class TimeSheet extends React.Component {
         Header: 'Start',
         accessor: d => new Date(d.start).toString(),
         Cell: d => <span>{moment(d.original.start).format('llll')}</span>,
-        // Filter: cellInfo => <DRP cellInfo={cellInfo} />,
         Filter: cellInfo => (
           // <DRP
           //   cellInfo={cellInfo}
@@ -121,32 +105,19 @@ class TimeSheet extends React.Component {
           />
         ),
         filterMethod: (filter, row) => {
-          console.log('FILTER', filter.value.startDate);
-          console.log('FILTER', filter.value.endDate);
-
-          // console.log('in filter method', filter);
           if (
             filter.value.startDate === null ||
             filter.value.endDate === null
           ) {
-            // Incomplete or cleared date picker
-            console.log('Incomplete or cleared date picker');
             return true;
           }
 
-          // if (
           return moment(row[filter.id]).isBetween(
             filter.value.startDate,
             filter.value.endDate,
             'days',
             '[]'
           );
-          // ) {
-          //   // Found row matching filter
-          //   // console.log('Found row matching filter');
-          //   console.log('ROW', moment(row[filter.id]));
-          //   return true;
-          // }
         }
       },
       {
@@ -208,7 +179,14 @@ class TimeSheet extends React.Component {
     return (
       <div>
         <div>
-          <Button onClick={this.download}>Download</Button>
+          <Button
+            color="primary"
+            onClick={this.download}
+            className="m-2"
+            style={{ width: '100%' }}
+          >
+            Download
+          </Button>
         </div>
         <div>
           <CSVLink
