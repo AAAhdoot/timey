@@ -14,12 +14,18 @@ export const getUsersOnProject = payload => ({
   payload
 });
 
+export const loadingChartData = () => ({
+  type: ACTIONS.LOADING_CHART_DATA
+});
+
 export const getProjectTicketsThunk = () => {
   return async dispatch => {
     try {
+      //dispatch action to change loading to true
+      dispatch(loadingChartData());
       const { data: tickets } = await axios.get(`/api/projects/user/tickets`);
       let formatedData = d3DataObject(tickets);
-      console.log('formatedData', formatedData);
+
       dispatch(getProjectTickets(formatedData));
     } catch (error) {
       console.log(error);
@@ -30,11 +36,12 @@ export const getProjectTicketsThunk = () => {
 export const getUsersOnProjectThunk = projectId => {
   return async dispatch => {
     try {
+      dispatch(loadingChartData());
       const { data: tickets } = await axios.get(
         `/api/projects/${projectId}/ticketdata`
       );
       let formatedData = d3PieChartData(tickets);
-      console.log('formatedData', formatedData);
+
       dispatch(getUsersOnProject(formatedData));
     } catch (error) {
       console.log(error);
