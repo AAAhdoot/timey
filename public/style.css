@@ -287,3 +287,16 @@ text {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 14px;
 }
+
+.no-data-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 24px;
+}
+
+.list-group a:hover {
+  text-decoration: none;
+  background-color: #dadbe8;
+}
+.list-group li:hover {
+  background-color: #dadbe8;
+}

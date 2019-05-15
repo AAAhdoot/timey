@@ -44,8 +44,11 @@ class PieChart extends Component {
 
     // let x = width / 2;
     // let y = height / 2;
+    const isLoading = this.props.isLoading;
 
-    if (this.props.userdata.length) {
+    if (isLoading) {
+      return <Spinner color="info" className="spinner" />;
+    } else if (this.props.userdata.length) {
       let data = this.props.userdata.map(object => object.points);
       let totalPoints = data.reduce((current, next) => {
         return current + next;
@@ -71,14 +74,20 @@ class PieChart extends Component {
         </React.Fragment>
       );
     } else {
-      return <Spinner color="info" className="spinner" />;
+      return (
+        <div className="no-data-label">
+          {' '}
+          This projects tickets is not assigned any users
+        </div>
+      );
     }
   }
 }
 const mapStateToProps = state => {
   return {
     userdata: state.d3data.userdata,
-    project: state.project.project
+    project: state.project.project,
+    isLoading: state.d3data.isLoading
   };
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
