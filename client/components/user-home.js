@@ -17,7 +17,7 @@ class UserHome extends Component {
     return (
       <div>
         <div>
-          <h3>Welcome, {this.props.email}</h3>
+          <h3 className="user-home-welcome">Welcome, {this.props.email}</h3>
         </div>
         <Project />
       </div>

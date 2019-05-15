@@ -6,6 +6,7 @@ import { getUsersOnProjectThunk } from '../actions/d3data';
 import { getProjectThunk } from '../actions/project';
 import { arc as d3Arc, pie as d3Pie } from 'd3-shape';
 import Slice from './Slice';
+import { Spinner } from 'reactstrap';
 
 let width;
 let height;
@@ -20,12 +21,10 @@ class PieChart extends Component {
     this.props.getProject();
     window.addEventListener('resize', this.calculatePosition);
   }
-  componentDidUpdate(prevProps) {
-    console.log('PREVPROPS INSIDE PIECHART', prevProps);
+  componentDidUpdate() {
     this.calculatePosition();
   }
   calculatePosition() {
-    console.log('THIS IS GETTING CALLED');
     width = window.innerWidth;
     height = window.innerHeight;
     minViewportSize = Math.min(width, height);
@@ -34,8 +33,6 @@ class PieChart extends Component {
 
     x = width / 2;
     y = height / 2;
-    console.log('x', x);
-    console.log('y', y);
   }
 
   render() {
@@ -50,24 +47,31 @@ class PieChart extends Component {
 
     if (this.props.userdata.length) {
       let data = this.props.userdata.map(object => object.points);
-      console.log('DATA!!!', data);
+      let totalPoints = data.reduce((current, next) => {
+        return current + next;
+      });
+
       let pie = d3.pie()(data);
       return (
-        <svg height="100vh" width="100%">
-          <g transform={`translate(${x}, ${y})`}>
-            <Slice
-              pie={pie}
-              x={x}
-              y={y}
-              radius={radius}
-              cornerRadius={7}
-              alldata={this.props.userdata}
-            />
-          </g>
-        </svg>
+        <React.Fragment>
+          <h3 className="pie-chart-header">{this.props.project.name}</h3>
+          <svg height="100vh" width="100%">
+            <g transform={`translate(${x}, ${y})`}>
+              <Slice
+                pie={pie}
+                x={x}
+                y={y}
+                totalPoints={totalPoints}
+                radius={radius}
+                cornerRadius={7}
+                alldata={this.props.userdata}
+              />
+            </g>
+          </svg>
+        </React.Fragment>
       );
     } else {
-      return <div>were waiting for data</div>;
+      return <Spinner color="info" className="spinner" />;
     }
   }
 }

@@ -3,14 +3,9 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 
 class Slice extends Component {
-  componentDidUpdate(prevProps) {
-    console.log('component was updated');
-    console.log('PREVPROPS', prevProps);
-  }
   render() {
-    let { pie, x, y } = this.props;
-    console.log('x insice slice', x);
-    console.log('y inside of slice', y);
+    let { pie, totalPoints } = this.props;
+
     let arc = d3
       .arc()
       .innerRadius(50)
@@ -23,19 +18,22 @@ class Slice extends Component {
         object => object.points === slice.data
       );
 
-      console.log('slice!!', slice);
       if (user.user === null) {
         user.user = 'unassigned';
       }
+      let [startAngle, endAngle] = arc.centroid(slice);
+      startAngle = startAngle - 30;
+      let percent = Math.round(slice.data / totalPoints * 100);
       return (
         <React.Fragment>
           <path d={arc(slice)} fill={sliceColor} />
 
           <text
-            transform={`translate(${arc.centroid(slice)})`}
+            transform={`translate(${startAngle}, ${endAngle})`}
             fill="black"
             dy=".35em"
           >
+            {percent}%
             {user.user}
           </text>
         </React.Fragment>

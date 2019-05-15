@@ -114,7 +114,7 @@ form div {
   }
   .board-container.row .col {
     border: 2px solid white;
-    background-color: #DADBE8;
+    background-color: #dadbe8;
     display: block;
   }
   .data-react-beautiful-dnd-droppable {
@@ -131,13 +131,11 @@ form div {
   }
   nav.navbar.navbar-expand-md.navbar-light.bg-light {
     padding: 0;
-
   }
 }
 
 nav.navbar {
   padding: 0;
-  
 }
 
 #submit {
@@ -216,7 +214,7 @@ a.navbar-brand {
   padding: 30px;
   box-shadow: 3px 3px 30px rgba(0, 0, 0, 0.35);
   border-radius: 10px;
-  border: 3px solid #7E7A87;
+  border: 3px solid #7e7a87;
   max-width: 450px;
 }
 
@@ -277,4 +275,15 @@ body {
 .loginBtn--google:hover,
 .loginBtn--google:focus {
   background: #e74b37;
+}
+
+.user-home-welcome,
+.pie-chart-header {
+  font-family: 'Barlow Condensed', sans-serif;
+  text-align: center;
+}
+
+text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px;
 }

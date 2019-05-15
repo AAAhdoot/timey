@@ -6,6 +6,7 @@ import { scaleBand, scaleLinear } from 'd3-scale';
 import Axes from './Axes';
 import Bars from './Bars';
 import ResponsiveWrapper from './ResponsiveWrapper';
+import { Spinner } from 'reactstrap';
 
 class Chart extends Component {
   constructor() {
@@ -19,7 +20,6 @@ class Chart extends Component {
   }
 
   render() {
-    console.log('tickets', this.props.tickets);
     const margins = { top: 50, right: 20, bottom: 100, left: 60 };
     const svgDimensions = {
       width: Math.max(this.props.parentWidth, 300),
@@ -28,7 +28,7 @@ class Chart extends Component {
     let points = this.props.tickets.map(d => d.points);
     console.log('POINTS', points);
     const maxValue = Math.max(...points);
-    console.log('MAXVALUE', maxValue);
+
     const xScale = this.xScale
       .padding(0.5)
       .domain(this.props.tickets.map(d => d.project))
@@ -55,7 +55,7 @@ class Chart extends Component {
         </svg>
       );
     } else {
-      return <div>Component data is loading</div>;
+      return <Spinner color="info" className="spinner" />;
     }
   }
 }
@@ -67,9 +67,9 @@ const mapState = state => {
   };
 };
 const mapDispatch = dispatch => ({
-  // loadProjects: () => {
-  //   dispatch(getProjectsThunk());
-  // },
+  loadProjects: () => {
+    dispatch(getProjectsThunk());
+  },
   loadTickets: () => {
     dispatch(getProjectTicketsThunk());
   }

@@ -156,6 +156,7 @@ export function generateNewColumns(payload) {
 
 export function d3DataObject(array) {
   return array.map(object => {
+    console.log('entire object', object);
     return {
       project: object['project.name'],
       points: Number(object.points),
@@ -179,11 +180,16 @@ export const millisConverted = milli => {
 };
 
 export function d3PieChartData(array) {
-  return array.map(object => {
+  let sum = 0;
+  let newArray = array.map(object => {
+    sum += object.points;
     return {
       points: Number(object.points),
       user: object['user.email'],
       id: object.id
     };
   });
+  newArray.total = sum;
+  console.log(newArray);
+  return newArray;
 }
