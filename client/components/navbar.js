@@ -39,7 +39,7 @@ class MainNav extends Component {
               <NavbarBrand
                 href="/"
                 className="title"
-                style={{ color: '#007BFF' }}
+                style={{ color: '#54406B' }}
               >
                 Timey
               </NavbarBrand>
@@ -75,7 +75,7 @@ class MainNav extends Component {
               <NavbarBrand
                 href="/"
                 className="title"
-                style={{ color: '#007BFF' }}
+                style={{ color: '#54406B' }}
               >
                 Timey
               </NavbarBrand>
