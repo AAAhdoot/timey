@@ -21,6 +21,7 @@ class Chart extends Component {
 
   render() {
     const margins = { top: 50, right: 20, bottom: 100, left: 60 };
+    const isLoading = this.props.isLoading;
     const svgDimensions = {
       width: Math.max(this.props.parentWidth, 300),
       height: 500
@@ -37,7 +38,11 @@ class Chart extends Component {
     const yScale = this.yScale
       .domain([0, maxValue])
       .range([svgDimensions.height - margins.bottom, margins.top]);
-    if (maxValue > 0) {
+    console.log('IS LOADING', isLoading);
+
+    if (isLoading) {
+      return <Spinner color="info" className="spinner" />;
+    } else if (maxValue > 0) {
       return (
         <svg width={svgDimensions.width} height={svgDimensions.height}>
           <Axes
@@ -55,7 +60,12 @@ class Chart extends Component {
         </svg>
       );
     } else {
-      return <Spinner color="info" className="spinner" />;
+      return (
+        <div className="no-data-label">
+          {' '}
+          You are not assigned to any projects
+        </div>
+      );
     }
   }
 }
@@ -63,7 +73,8 @@ const mapState = state => {
   return {
     email: state.user.email,
     projects: state.project.projects,
-    tickets: state.d3data.tickets
+    tickets: state.d3data.tickets,
+    isLoading: state.d3data.isLoading
   };
 };
 const mapDispatch = dispatch => ({
