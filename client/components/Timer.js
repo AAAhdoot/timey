@@ -2,6 +2,7 @@ const React = require('react');
 import axios from 'axios';
 //import { Button } from 'reactstrap';
 import Button from '@material-ui/core/Button';
+import socket from '../socket';
 class Timer extends React.Component {
   constructor(props) {
     super(props);
@@ -16,11 +17,14 @@ class Timer extends React.Component {
     this.millisToMinutesAndSeconds = this.millisToMinutesAndSeconds.bind(this);
   }
 
+
+
   millisToMinutesAndSeconds(millis) {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
+
 
   async componentDidMount() {
     const id = this.props.ticket.id;
@@ -35,7 +39,12 @@ class Timer extends React.Component {
       });
       this.startTimer();
     }
-    // setTimeout(console.log(this.state), 1000);
+  }
+
+  millisToMinutesAndSeconds(millis) {
+    let minutes = Math.floor(millis / 60000);
+    let seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
 
   async startTimer() {
@@ -48,11 +57,13 @@ class Timer extends React.Component {
         this.setState({
           time: Date.now() - this.state.start
         }),
-      1
+      1000
     );
     this.setState({ status: true });
     const id = this.props.ticket.id;
     await axios.post(`/api/userTickets/${id}`);
+
+    this.props.deactivateList();
   }
   async stopTimer() {
     this.setState({ isOn: false, time: 0 });
@@ -60,6 +71,7 @@ class Timer extends React.Component {
     const id = this.props.ticket.id;
     this.setState({ status: false });
     await axios.put(`/api/userTickets/${id}`);
+    this.props.activateList();
   }
 
   render() {
@@ -76,7 +88,7 @@ class Timer extends React.Component {
             >
               stop
             </Button>
-          ) : this.props.currentUser === this.props.ticket.userId ? (
+          ) : this.props.currentUser === this.props.newUser ? (
             <Button
               variant="contained"
               color="secondary"

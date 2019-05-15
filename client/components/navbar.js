@@ -33,12 +33,17 @@ class MainNav extends Component {
   render() {
     return (
       <div>
-        {/* <h1>Time Tracker</h1> */}
-
         {this.props.isLoggedIn ? (
           <div>
             <Navbar color="light" light expand="md">
-              <NavbarBrand href="/">Time Tracker</NavbarBrand>
+              <NavbarBrand
+                href="/"
+                className="title"
+                style={{ color: '#007BFF' }}
+              >
+                Timey
+              </NavbarBrand>
+
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>
@@ -46,12 +51,13 @@ class MainNav extends Component {
                     <Link to="/home">Home</Link>
                   </NavItem>
                   <NavItem>
-                    <a href="#" onClick={this.props.handleClick}>
+                    <Link
+                      onClick={() => {
+                        this.props.handleClick();
+                      }}
+                    >
                       Logout
-                    </a>
-                  </NavItem>
-                  <NavItem>
-                    <Link to="/projects"> My Projects </Link>
+                    </Link>
                   </NavItem>
                   <NavItem>
                     <Link to="/projects/user/tables">Tickets Per Project</Link>
@@ -66,7 +72,13 @@ class MainNav extends Component {
         ) : (
           <div>
             <Navbar color="light" light expand="md">
-              <NavbarBrand href="/">Time Tracker</NavbarBrand>
+              <NavbarBrand
+                href="/"
+                className="title"
+                style={{ color: '#007BFF' }}
+              >
+                Timey
+              </NavbarBrand>
               <NavbarToggler onClick={this.toggle} />
               <Collapse isOpen={this.state.isOpen} navbar>
                 <Nav className="ml-auto" navbar>

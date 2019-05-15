@@ -26,25 +26,25 @@ const AuthForm = props => {
   const { name, displayName, handleSubmit, error, classes } = props;
 
   return (
-    <div>
-      <form className={classes.container} onSubmit={handleSubmit} name={name}>
+   <div  id='loginform' >
+      <form id='loginForm1'className={classes.container} onSubmit={handleSubmit} name={name}>
         {/* I am saving the old formfields until these pass testing  */}
         {/* <div>
           <label htmlFor="email">
             <small>Email</small>
           </label>
           <input name="email" type="text" />
-        </div> */}
-        {/* <div>
+        </div>
+        <div>
           <label htmlFor="password">
             <small>Password</small>
           </label>
           <input name="password" type="password" />
-        </div> */}
-        {/* <div>
+        </div>
+        <div>
           <button type="submit">{displayName}</button>
         </div> */}
-        <TextField
+      <div> <TextField
           required
           id="outlined-with-placeholder"
           label="Email"
@@ -55,6 +55,8 @@ const AuthForm = props => {
           type="email"
           name="email"
         />
+        </div>
+        <div>
         <TextField
           required
           id="outlined-password-input"
@@ -65,15 +67,24 @@ const AuthForm = props => {
           margin="normal"
           variant="outlined"
         />
+        </div>
+        <div>
         <Button type="submit" variant="outlined" className={classes.button}>
           {displayName}
         </Button>
-
+        </div>
         {error && error.response && <div> {error.response.data} </div>}
+        {/* <div> <form method='get' action='/auth/google'>
+      <button type='submit'  className="loginBtn loginBtn--google">Login with Google</button>
+    </form></div> */}
       </form>
+    
       {/* Commenting out google OAuth until its implemented  */}
       {/* <a href="/auth/google">{displayName} with Google</a> */}
-    </div>
+      <form method='get' action='/auth/google'>
+      <button type='submit'  className="loginBtn loginBtn--google">Login with Google</button>
+    </form>
+  </div>
   );
 };
 

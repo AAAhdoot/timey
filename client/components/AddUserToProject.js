@@ -47,7 +47,9 @@ class AddUserToProject extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div className='create-form' >
+      <div>
+       <form  id='abc'  onSubmit={this.handleSubmit}>
         <label className="formLabel" htmlFor="email">
           Email:
         </label>
@@ -62,6 +64,8 @@ class AddUserToProject extends Component {
           Submit
         </button>
       </form>
+      </div>
+      </div>
     );
   }
 }

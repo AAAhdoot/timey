@@ -50,6 +50,7 @@ class ProjectBoard extends React.Component {
 
   componentDidMount() {
     const projectId = this.props.match.params.id;
+    console.log('projectId inside component did mount', projectId);
     this.props.getProject(projectId);
     this.props.loadProjects();
     this.props.loadUsers();
@@ -108,7 +109,6 @@ class ProjectBoard extends React.Component {
     );
 
     this.props.reorderProps(newProps.columns); //frontend
-
     this.props.reorder(result); //backend
 
     socket.emit('reorder', this.props.match.params.id, newProps.columns);
@@ -122,12 +122,12 @@ class ProjectBoard extends React.Component {
       <div>
         <Container className="project-board">
           <Row>
-            <Col xs={6}>
+            <Col sm={12} xs={12}  md={6}>
               <ButtonDropdown
                 isOpen={this.state.dropdownOpen}
                 toggle={this.toggle}
               >
-                <DropdownToggle caret size="sm">
+                <DropdownToggle caret size="sm" color="info">
                   {this.props.project.name}
                 </DropdownToggle>
                 <DropdownMenu>
@@ -142,37 +142,19 @@ class ProjectBoard extends React.Component {
                   })}
                 </DropdownMenu>
               </ButtonDropdown>
-
-              <ButtonDropdown
-                isOpen={this.state.userDropdownOpen}
-                toggle={this.userToggle}
-              >
-                <DropdownToggle caret size="sm">
-                  {' '}
+              <Link to={`/projects/${this.props.project.id}/ticketdata`}>
+                <Button color="info" size="sm">
                   Users On Project
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem header>Users On Project</DropdownItem>
-                  <DropdownItem divider />
-                  {this.props.allUsers.map(user => {
-                    return (
-                      <DropdownItem
-                        key={user.id}
-                        // onClick={() => this.props.addUser(user.id)}
-                      >
-                        {user.email}
-                      </DropdownItem>
-                    );
-                  })}
-                </DropdownMenu>
-              </ButtonDropdown>
-            </Col>
-            <Col xs={6} className="right-nav">
+                </Button>
+              </Link>
               <Link to={`/timesheet`}>
                 <Button color="info" size="sm">
                   Timesheets
                 </Button>
               </Link>
+            </Col>
+        
+            <Col xs={12}   sm={12} md={6}   className="right-nav">
               <Link to={`/projects/${this.props.project.id}/newticket`}>
                 <Button outline color="info" size="sm">
                   New Ticket

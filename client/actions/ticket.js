@@ -119,6 +119,7 @@ export const addUserToTicketThunk = (ticketId, userId) => async dispatch => {
     );
     socket.emit('modify', result.ticket.projectId, {
       id: result.ticket.id,
+      userId,
       userEmail: result.userEmail
     });
     socket.emit('update ticket', result.ticket.projectId, result.ticket);

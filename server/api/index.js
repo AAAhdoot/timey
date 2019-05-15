@@ -10,4 +10,5 @@ router.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
   res.status(404).send('NOT FOUND');
+
 });

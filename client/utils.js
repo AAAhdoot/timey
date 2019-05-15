@@ -154,64 +154,15 @@ export function generateNewColumns(payload) {
   };
 }
 
-const tickets = {
-  '1': {
-    id: 1,
-    title: 'create User',
-    desc: 'idk',
-    points: 1,
-    status: 'to do'
-  },
-  '2': {
-    id: 2,
-    title: 'create footer',
-    desc: 'idk2',
-    points: 4,
-    status: 'to do'
-  },
-  '3': {
-    id: 3,
-    title: 'create nav',
-    desc: 'idk',
-    points: 1,
-    status: 'in progress'
-  },
-  '4': {
-    id: 4,
-    title: 'create footer',
-    desc: 'idk2',
-    points: 3,
-    status: 'in progress'
-  },
-  '5': {
-    id: 5,
-    title: 'have fun',
-    desc: 'idk',
-    points: 1,
-    status: 'in review'
-  },
-  '6': {
-    id: 6,
-    title: 'create footer',
-    desc: 'idk2',
-    points: 3,
-    status: 'in review'
-  },
-  '7': {
-    id: 7,
-    title: 'have fun',
-    desc: 'idk',
-    points: 1,
-    status: 'done'
-  },
-  '8': {
-    id: 8,
-    title: 'create footer',
-    desc: 'idk2',
-    points: 3,
-    status: 'done'
-  }
-};
+export function d3DataObject(array) {
+  return array.map(object => {
+    return {
+      project: object['project.name'],
+      points: Number(object.points),
+      id: object.id
+    };
+  });
+}
 
 export const millisConverted = milli => {
   const seconds = Number(milli / 1000);
@@ -226,3 +177,13 @@ export const millisConverted = milli => {
   const sDisplay = s > 0 ? s + (s == 1 ? ' second' : ' seconds') : '';
   return dDisplay + hDisplay + mDisplay + sDisplay;
 };
+
+export function d3PieChartData(array) {
+  return array.map(object => {
+    return {
+      points: Number(object.points),
+      user: object['user.email'],
+      id: object.id
+    };
+  });
+}

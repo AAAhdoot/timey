@@ -14,3 +14,8 @@ export const GET_USERS = 'GET_USERS';
 export const GET_PROJECT_USERS = 'GET_PROJECT_USERS';
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_TO_TICKET = 'ADD_USER_TO_TICKET';
+
+//D3Data Constants
+
+export const GET_PROJECT_TICKETS = 'GET_PROJECT_TICKETS';
+export const GET_USERS_ON_PROJECT = 'GET_USERS_ON_PROJECT';

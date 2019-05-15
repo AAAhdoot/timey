@@ -36,7 +36,10 @@ class Ticket extends Component {
       dropdownOpen: false,
       btnDropright: false,
       userDropdownOpen: false,
-      userEmail: 'Select User'
+      userEmail: 'Select User',
+
+      newUser: this.props.ticket.userId,
+      disabled: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,6 +47,8 @@ class Ticket extends Component {
     this.userToggle = this.userToggle.bind(this);
     this.toggleTab = this.toggleTab.bind(this);
     this.select = this.select.bind(this);
+    this.deactivateList = this.deactivateList.bind(this);
+    this.activateList = this.activateList.bind(this);
   }
 
   componentDidMount() {
@@ -52,7 +57,11 @@ class Ticket extends Component {
     }
     socket.on('modify', data => {
       if (this.props.ticket.id === data.id) {
-        this.setState(data);
+        // console.log(data);
+        this.setState({
+          userEmail: data.userEmail,
+          newUser: data.userId
+        });
       }
     });
   }
@@ -111,6 +120,14 @@ class Ticket extends Component {
 
   handleClose = () => {
     this.setState({ open: false });
+  };
+
+  deactivateList = () => {
+    this.setState({ disabled: 'disabled' });
+  };
+
+  activateList = () => {
+    this.setState({ disabled: '' });
   };
 
   render() {
@@ -225,23 +242,29 @@ class Ticket extends Component {
                     {this.props.allUsers.map(user => {
                       return (
                         <DropdownItem
+                          className={this.state.disabled}
+                          key={user.id}
                           onClick={() => {
                             this.props.addUserToTix(ticket.id, user.id);
+                            this.setState({ newUser: user.id });
                             this.select(event);
                           }}
-                          key={user.id}
                         >
                           {user.email}
                         </DropdownItem>
                       );
                     })}
                     <DropdownItem
+                      className={this.state.disabled}
                       onClick={() => {
                         this.props.removeUserfromTix(
                           ticket.id,
                           ticket.projectId
                         );
-                        this.setState({ userEmail: 'select user' });
+                        this.setState({
+                          userEmail: 'Select User',
+                          newUser: {}
+                        });
                       }}
                     >
                       {' '}
@@ -250,7 +273,14 @@ class Ticket extends Component {
                   </DropdownMenu>
                 </ButtonDropdown>
               </div>
-              <Timer ticket={ticket} currentUser={this.props.user.id} />
+              <Timer
+                newUser={this.state.newUser}
+                ticket={ticket}
+                currentUser={this.props.user.id}
+                deactivateList={this.deactivateList}
+                activateList={this.activateList}
+                currentProject={this.props.user.projectId}
+              />
             </div>
           </CardBody>
         </Card>
