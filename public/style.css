@@ -15,52 +15,63 @@ a {
 .title {
   font-family: 'Coiny', cursive;
 }
-
+/* overwriting reactstrap button colors*/
 .abcd {
   background-color: #48375b;
   border: none;
 }
-
+button.abcd.dropdown-toggle.btn.btn-info.btn-sm {
+  background-color: #48375b;
+  border: none;
+  box-shadow: none;
+}
+button.abcd.dropdown-toggle.btn.btn-info.btn-sm:focus {
+  border: none;
+  outline: none;
+}
+button.abcd.dropdown-toggle.btn.btn-info.btn-sm:hover {
+  background-color: #dadbe8;
+  color: #48375b;
+}
 .abcd:hover {
   background-color: #dadbe8;
-  color: #48375b
+  color: #48375b;
 }
 .abcd:active {
   background-color: #48375b !important;
   border: none;
-  border-color:white;
-  color:white;
+  border-color: white;
+  color: white;
 }
 .abcd:focus {
   border: none;
-  border-color:white;
+  border-color: white;
+  box-shadow: none;
 }
-
-
 .abcde {
   background-color: white;
   border: 1px solid #48375b;
-  color: #48375b
+  color: #48375b;
 }
-
 .abcde:hover {
   background-color: #48375b;
-
+  border: 1px solid #48375b;
 }
-
-.abcde:active {
-  background-color: white !important;
+button.abcde.btn.btn-outline-info.btn-sm:active {
+  background-color: #48375b;
+  color: white;
+}
+button.abcde.btn.btn-outline-info.btn-sm:focus {
   border: none;
-  border-color:white;
-  border:none;
-
+  outline: none;
+  box-shadow: none;
 }
-
 .abcde:focus {
   border: none;
-  border-color:white;
+  border-color: white;
+  background-color: #48375b;
+  box-shadow: none;
 }
-
 
 .axis path,
 .axis line {
@@ -269,7 +280,6 @@ a.navbar-brand {
   border: 3px solid #7e7a87;
   max-width: 450px;
 }
-
 
 #loginform,
 #loginForm1 {
