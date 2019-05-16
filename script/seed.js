@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable max-statements */
 'use strict';
 
@@ -519,11 +520,9 @@ async function seed() {
     })
   ]);
 
-  projects[0].setUsers([users[0], users[1], users[2]]);
-  projects[1].setUsers([users[3], users[1], users[4]]);
-  projects[2].setUsers([users[1], users[4]]);
-  projects[3].setUsers([users[0], users[2], users[4]]);
-  projects[4].setUsers([users[3]], users[2]);
+  for (let i = 0; i < projects.length; i++) {
+    await projects[i].setUsers(users);
+  }
 
   for (let i = 0; i < netflixTickets.length; i++) {
     await netflixTickets[i].setProject(projects[0]);
