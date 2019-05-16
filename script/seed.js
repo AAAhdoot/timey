@@ -557,7 +557,11 @@ async function seed() {
   for (let i = 0; i < allTickets.length; i++) {
     for (let j = 0; j < users.length; j++) {
       let start = randomDate(new Date(2019, 0, 1), new Date());
-      let end = randomDate(new Date(start), new Date());
+
+      let end = randomDate(
+        new Date(start),
+        new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1)
+      );
       let userTicket = await UserTicket.create({
         start: new Date(start),
         end: new Date(end)
