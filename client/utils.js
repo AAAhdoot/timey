@@ -180,16 +180,11 @@ export const millisConverted = milli => {
 };
 
 export function d3PieChartData(array) {
-  let sum = 0;
-  let newArray = array.map(object => {
-    sum += object.points;
+  return array.map(object => {
     return {
       points: Number(object.points),
       user: object['user.email'],
       id: object.id
     };
   });
-  newArray.total = sum;
-  console.log(newArray);
-  return newArray;
 }

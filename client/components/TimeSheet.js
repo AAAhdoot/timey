@@ -25,24 +25,18 @@ class TimeSheet extends React.Component {
         allData: []
       },
       dataToDownload: [],
-      selectedDay: undefined,
-      isEmpty: true,
-      isDisabled: false,
       startDate: null,
       endDate: null,
       focusedInput: null
     };
-
-    this.calcTotal = this.calcTotal.bind(this);
   }
 
   async componentDidMount() {
     const { data } = await Axios.get(`/api/users/timesheet`);
-
     let tableproperties = { ...this.state.tableproperties };
     tableproperties.allData = data;
     await this.setState({ tableproperties });
-
+    this.addFilterPlaceholder();
     this.calcTotal();
   }
 
@@ -54,7 +48,7 @@ class TimeSheet extends React.Component {
     this.setState({ endDate: end });
   };
 
-  calcTotal() {
+  calcTotal = () => {
     let totalTime;
     if (this.reactTable) {
       totalTime = millisConverted(
@@ -70,7 +64,7 @@ class TimeSheet extends React.Component {
       );
     }
     this.setState({ totalTime });
-  }
+  };
 
   columns = () => {
     return [
@@ -136,7 +130,8 @@ class TimeSheet extends React.Component {
             new Date(d.original.end).getTime() -
               new Date(d.original.start).getTime()
           ),
-        Footer: this.state.totalTime
+        Footer: this.state.totalTime ? `Total: ${this.state.totalTime}` : null,
+        filterable: false
       }
     ];
   };
@@ -165,6 +160,13 @@ class TimeSheet extends React.Component {
   //     }
   //   }
   // });
+
+  addFilterPlaceholder = () => {
+    const filters = document.querySelectorAll('div.rt-th > input');
+    for (let filter of filters) {
+      filter.placeholder = 'Search..';
+    }
+  };
 
   getTheadFilterThProps = () => {
     return {
@@ -202,7 +204,7 @@ class TimeSheet extends React.Component {
             ref={r => (this.reactTable = r)}
             data={this.state.tableproperties.allData}
             columns={this.columns()}
-            defaultPageSize={8}
+            defaultPageSize={5}
             filterable
             defaultFilterMethod={(filter, row) =>
               String(row[filter.id])
@@ -211,10 +213,16 @@ class TimeSheet extends React.Component {
             }
             filtered={this.state.filtered}
             onFilteredChange={filtered => {
-              this.setState({ filtered }, this.calcTotal());
+              this.setState({ filtered }, this.calcTotal.bind(this));
             }}
             className="-striped -highlight"
             showFilters="true"
+            defaultSorting={[
+              {
+                id: 'id',
+                desc: false
+              }
+            ]}
             getTheadFilterThProps={this.getTheadFilterThProps}
           />
         </div>
