@@ -35,6 +35,9 @@ const Ticket = db.define('ticket', {
     allowNull: false,
     defaultValue: 0,
     min: 0
+  },
+  next: {
+    type: Sequelize.INTEGER
   }
 });
 
