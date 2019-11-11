@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-lonely-if */
 const router = require('express').Router();
-const { Project, Ticket, User } = require('../db/models');
+const { Project, Ticket, User, Column } = require('../db/models');
 module.exports = router;
 
 router.get('/all', async (req, res, next) => {
@@ -129,6 +129,7 @@ router.post('/:id', async (req, res, next) => {
   }
 });
 
+// get all the tickets for a specific project
 router.get('/:id/tickets', async (req, res, next) => {
   try {
     if (!req.isAuthenticated()) {
@@ -160,6 +161,20 @@ router.get('/:id/tickets', async (req, res, next) => {
 
           result.tickets = await project.getTickets({ include: User });
 
+          //grab columns
+          // let columns = await project.getColumns();
+          // for (let i = 0; i < columns.length; i++) {
+          //   let ticketRoot = await Ticket.findByPk(columns[i].ticketRoot);
+          //   let linkedList = [];
+
+          //   while (ticketRoot) {
+          //     linkedList.push(ticketRoot.dataValues);
+          //     ticketRoot = await Ticket.findByPk(ticketRoot.next);
+          //   }
+
+          //   console.log(linkedList);
+          // }
+
           res.json(result);
         }
       }
@@ -169,7 +184,7 @@ router.get('/:id/tickets', async (req, res, next) => {
   }
 });
 
-/* This route gets all the users for a specifc project  */
+/* This route gets all the users for a specific project  */
 router.get('/:id/users', async (req, res, next) => {
   try {
     if (!req.isAuthenticated()) {
