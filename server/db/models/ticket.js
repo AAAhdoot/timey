@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
+const Column = require('./column');
 const Op = Sequelize.Op;
 
 const Ticket = db.define('ticket', {
@@ -51,6 +52,89 @@ Ticket.maxOrder = async function(status, projectId) {
     raw: true
   });
   return max;
+};
+
+Ticket.prototype.insertSameColumnLL = async function(dest) {
+  const column = await this.getColumn();
+
+  if (column.ticketRoot === this.id) {
+    await column.update({ ticketRoot: this.next });
+  } else if (column.ticketRoot === dest.id) {
+    await column.update({ ticketRoot: this.id });
+  }
+
+  await Ticket.update(
+    { next: this.next || null },
+    {
+      where: {
+        projectId: this.projectId,
+        next: this.id
+      }
+    }
+  );
+
+  await this.update({ next: dest.next });
+
+  await Ticket.update(
+    { next: this.id || null },
+    {
+      where: {
+        projectId: this.projectId,
+        id: dest.id
+      }
+    }
+  );
+};
+
+Ticket.prototype.removeFromColumnLL = async function() {
+  const column = await this.getColumn();
+
+  if (column.ticketRoot === this.id) {
+    await column.update({ ticketRoot: this.next });
+  }
+
+  await Ticket.update(
+    // change the next ref of prev ticket to this.next
+    { next: this.next || null },
+    {
+      where: {
+        projectId: this.projectId,
+        next: this.id
+      }
+    }
+  );
+
+  await this.update({ next: null });
+};
+
+Ticket.prototype.insertDiffColumnLL = async function(dest) {
+  const destColumn = await Column.findByPk(dest.columnId);
+
+  if (destColumn.ticketRoot === dest.id) {
+    await destColumn.update({ ticketRoot: this.id });
+  }
+
+  // await Ticket.update(
+  //   { next: this.id },
+  //   {
+  //     where: {
+  //       projectId: this.projectId,
+  //       id: dest.id
+  //     }
+  //   }
+  // );
+
+  await Ticket.update(
+    { next: this.id },
+    {
+      where: {
+        projectId: this.projectId,
+        next: dest.id
+      }
+    }
+  );
+
+  await this.update({ next: dest.id, columnId: destColumn.id });
 };
 
 Ticket.prototype.insertSameColumn = async function(src, dest) {

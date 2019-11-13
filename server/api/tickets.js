@@ -152,7 +152,9 @@ router.put('/:id', async (req, res, next) => {
 
 router.put('/:id/reorder', async (req, res, next) => {
   try {
-    const { result } = req.body;
+    const { result, src, dest } = req.body;
+
+    console.log(src, dest);
 
     const { destination, source, draggableId } = result;
 
@@ -163,6 +165,8 @@ router.put('/:id/reorder', async (req, res, next) => {
       await ticket.update({
         order: destination.index
       });
+
+      await ticket.insertSameColumnLL(dest);
 
       res.sendStatus(200);
     } else {
@@ -176,6 +180,9 @@ router.put('/:id/reorder', async (req, res, next) => {
         status: destination.droppableId,
         order: destination.index
       });
+
+      await ticket.removeFromColumnLL();
+      await ticket.insertDiffColumnLL(dest);
 
       res.sendStatus(200);
     }

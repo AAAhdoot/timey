@@ -5,6 +5,6 @@
  */
 export { default as MainNav } from './navbar';
 export { default as UserHome } from './user-home';
-export { default as ProjectBoard } from './project-board';
+export { default as ProjectBoard } from './ProjectBoard';
 export { default as Ticket } from './Ticket';
 export { Login, Signup } from './auth-form';

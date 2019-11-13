@@ -50,7 +50,6 @@ class ProjectBoard extends React.Component {
 
   componentDidMount() {
     const projectId = this.props.match.params.id;
-    console.log('projectId inside component did mount', projectId);
     this.props.getProject(projectId);
     this.props.loadProjects();
     this.props.loadUsers();
@@ -101,6 +100,16 @@ class ProjectBoard extends React.Component {
       return;
     }
 
+    this.props.reorder(
+      result,
+      this.props.allTicketsObject[
+        this.props.columns[source.droppableId].taskIds[source.index]
+      ],
+      this.props.allTicketsObject[
+        this.props.columns[destination.droppableId].taskIds[destination.index]
+      ]
+    ); //backend
+
     const newProps = handleDragProps(
       source,
       destination,
@@ -109,7 +118,6 @@ class ProjectBoard extends React.Component {
     );
 
     this.props.reorderProps(newProps.columns); //frontend
-    this.props.reorder(result); //backend
 
     socket.emit('reorder', this.props.match.params.id, newProps.columns);
   };
@@ -122,12 +130,12 @@ class ProjectBoard extends React.Component {
       <div>
         <Container className="project-board">
           <Row>
-            <Col sm={12} xs={12}  md={6}>
+            <Col sm={12} xs={12} md={6}>
               <ButtonDropdown
                 isOpen={this.state.dropdownOpen}
                 toggle={this.toggle}
               >
-                <DropdownToggle caret size="sm"   color="info" className="abcd" >
+                <DropdownToggle caret size="sm" color="info" className="abcd">
                   {this.props.project.name}
                 </DropdownToggle>
                 <DropdownMenu>
@@ -143,25 +151,25 @@ class ProjectBoard extends React.Component {
                 </DropdownMenu>
               </ButtonDropdown>
               <Link to={`/projects/${this.props.project.id}/ticketdata`}>
-                <Button color="info" size="sm"  className="abcd">
+                <Button color="info" size="sm" className="abcd">
                   Users On Project
                 </Button>
               </Link>
               <Link to={`/timesheet`}>
-                <Button color="info" size="sm"  className="abcd">
+                <Button color="info" size="sm" className="abcd">
                   Timesheets
                 </Button>
               </Link>
             </Col>
-        
-            <Col xs={12}   sm={12} md={6}   className="right-nav">
+
+            <Col xs={12} sm={12} md={6} className="right-nav">
               <Link to={`/projects/${this.props.project.id}/newticket`}>
-                <Button outline color="info" size="sm"     className="abcde" >
+                <Button outline color="info" size="sm" className="abcde">
                   New Ticket
                 </Button>
               </Link>
               <Link to={`/projects/${this.props.project.id}/adduser`}>
-                <Button outline color="info" size="sm"    className="abcde">
+                <Button outline color="info" size="sm" className="abcde">
                   Add User
                 </Button>
               </Link>
@@ -184,8 +192,10 @@ class ProjectBoard extends React.Component {
                 To Do{' '}
                 <span>
                   {' '}
-                  ({this.props.columns['to_do'] &&
-                    this.props.columns['to_do'].taskIds.length})
+                  (
+                  {this.props.columns['to_do'] &&
+                    this.props.columns['to_do'].taskIds.length}
+                  )
                 </span>
               </Col>
               <Col
@@ -199,8 +209,10 @@ class ProjectBoard extends React.Component {
                 In Progress
                 <span>
                   {' '}
-                  ({this.props.columns['in_progress'] &&
-                    this.props.columns['in_progress'].taskIds.length})
+                  (
+                  {this.props.columns['in_progress'] &&
+                    this.props.columns['in_progress'].taskIds.length}
+                  )
                 </span>
               </Col>
               <Col
@@ -214,9 +226,11 @@ class ProjectBoard extends React.Component {
                 In Review{' '}
                 <span>
                   {' '}
-                  ({(this.props.columns['in_review'] &&
+                  (
+                  {(this.props.columns['in_review'] &&
                     this.props.columns['in_review'].taskIds.length) ||
-                    0})
+                    0}
+                  )
                 </span>
               </Col>
               <Col
@@ -230,9 +244,11 @@ class ProjectBoard extends React.Component {
                 Done{' '}
                 <span>
                   {' '}
-                  ({(this.props.columns['done'] &&
+                  (
+                  {(this.props.columns['done'] &&
                     this.props.columns['done'].taskIds.length) ||
-                    0})
+                    0}
+                  )
                 </span>
               </Col>
             </Row>
@@ -315,8 +331,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadTickets: () => {
       dispatch(getTicketsThunk(projectId));
     },
-    reorder: result => {
-      dispatch(updateColumnsThunk(result, projectId));
+    reorder: (result, src, dest) => {
+      dispatch(updateColumnsThunk(result, src, dest));
     },
     reorderProps: columns => {
       dispatch(reorderTickets(columns));

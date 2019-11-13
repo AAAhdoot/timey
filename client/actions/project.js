@@ -27,14 +27,16 @@ export const addUser = user => ({
   user
 });
 
-export const updateColumnsThunk = (result, projectId) => {
+export const updateColumnsThunk = (result, src, dest) => {
   return async dispatch => {
     try {
       const { data } = await axios.put(
         // draggableId is the ticketId
         `/api/tickets/${result.draggableId}/reorder`,
         {
-          result
+          result,
+          src,
+          dest
         }
       );
     } catch (error) {
