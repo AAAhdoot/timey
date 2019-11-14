@@ -103,10 +103,10 @@ class ProjectBoard extends React.Component {
     this.props.reorder(
       result,
       this.props.allTicketsObject[
-        this.props.columns[source.droppableId].taskIds[source.index]
+        this.props.llColumns[source.droppableId].taskIds[source.index]
       ],
       this.props.allTicketsObject[
-        this.props.columns[destination.droppableId].taskIds[destination.index]
+        this.props.llColumns[destination.droppableId].taskIds[destination.index]
       ]
     ); //backend
 
@@ -117,12 +117,17 @@ class ProjectBoard extends React.Component {
       this.props
     );
 
+    console.log(newProps.columns);
+
     this.props.reorderProps(newProps.columns); //frontend
 
     socket.emit('reorder', this.props.match.params.id, newProps.columns);
   };
   render() {
-    if (!this.props.columns['to_do'] || !this.props.allTickets) {
+    console.log(this.props);
+
+    if (!this.props.llColumns[1] || !this.props.allTickets) {
+      console.log('AIYAH');
       return '';
     }
 
@@ -253,7 +258,7 @@ class ProjectBoard extends React.Component {
               </Col>
             </Row>
 
-            <Row className="board-container" activetab={this.state.activeTab}>
+            {/* <Row className="board-container" activetab={this.state.activeTab}>
               <Column
                 columns={this.props.columns}
                 id="to_do"
@@ -289,6 +294,24 @@ class ProjectBoard extends React.Component {
                 activetab={this.state.activeTab}
                 allUsers={this.props.allUsers}
               />
+            </Row> */}
+            <Row className="board-container" activetab={this.state.activeTab}>
+              {this.props.llColumns[1] &&
+                Object.entries(this.props.llColumns).map(
+                  ([key, value], index) => {
+                    return (
+                      <Column
+                        key={key}
+                        columns={this.props.llColumns}
+                        id={key}
+                        tickets={this.props.allTicketsObject}
+                        tabId={index + 1}
+                        activetab={this.state.activeTab}
+                        allUsers={this.props.allUsers}
+                      />
+                    );
+                  }
+                )}
             </Row>
           </DragDropContext>
         </Container>
@@ -309,7 +332,8 @@ const mapStateToProps = state => {
     allUsers: state.project.users,
     ticket: state.ticket.ticket,
     allTicketsObject: state.ticket.allTicketsObject,
-    columns: state.ticket.columns
+    columns: state.ticket.columns,
+    llColumns: state.ticket.llColumns
   };
 };
 

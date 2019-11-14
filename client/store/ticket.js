@@ -2,7 +2,11 @@
 /* eslint-disable complexity */
 
 import * as ACTIONS from '../actions/action-types';
-import { createTicketsObject, generateNewColumns } from '../utils';
+import {
+  createTicketsObject,
+  generateNewColumns,
+  generateNewColumnsLL
+} from '../utils';
 
 const initialState = {
   to_do: [],
@@ -12,11 +16,13 @@ const initialState = {
   ticket: {},
   allTickets: [],
   allTicketsObject: {},
-  columns: {}
+  columns: {},
+  llColumns: {}
 };
 
 export default function(state = initialState, action) {
   const newState = { ...state };
+  console.log('action: ', action.payload);
   switch (action.type) {
     case ACTIONS.CREATE_TICKET:
       newState.allTicketsObject = {
@@ -39,6 +45,7 @@ export default function(state = initialState, action) {
       newState.done = action.payload.done.map(x => x.id);
       newState.allTicketsObject = createTicketsObject(newState.allTickets);
       newState.columns = generateNewColumns(newState);
+      newState.llColumns = generateNewColumnsLL(action.payload.llResult);
       newState.ticket = {};
       return newState;
     case ACTIONS.UPDATE_TICKET:
@@ -56,11 +63,12 @@ export default function(state = initialState, action) {
       newState.ticket = action.ticket;
       return newState;
     case ACTIONS.REORDER_TICKETS:
-      newState.to_do = action.payload['to_do'].taskIds;
-      newState.in_progress = action.payload['in_progress'].taskIds;
-      newState.in_review = action.payload['in_review'].taskIds;
-      newState.done = action.payload['done'].taskIds;
-      newState.columns = generateNewColumns(newState); // possibly just reassign the one/two affected columns instead of all of them
+      // newState.to_do = action.payload['to_do'].taskIds;
+      // newState.in_progress = action.payload['in_progress'].taskIds;
+      // newState.in_review = action.payload['in_review'].taskIds;
+      // newState.done = action.payload['done'].taskIds;
+      // newState.columns = generateNewColumns(newState); // possibly just reassign the one/two affected columns instead of all of them
+      newState.llColumns = action.payload;
       return newState;
     case ACTIONS.REMOVE_TICKET:
       newState.allTickets = newState.allTickets.filter(

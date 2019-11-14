@@ -154,32 +154,32 @@ router.put('/:id/reorder', async (req, res, next) => {
   try {
     const { result, src, dest } = req.body;
 
-    console.log(src, dest);
+    // console.log(src, dest);
 
     const { destination, source, draggableId } = result;
 
     const ticket = await Ticket.findByPk(req.params.id);
 
     if (source.droppableId === destination.droppableId) {
-      await ticket.insertSameColumn(source.index, destination.index);
-      await ticket.update({
-        order: destination.index
-      });
-
-      await ticket.insertSameColumnLL(dest);
+      // await ticket.insertSameColumn(source.index, destination.index);
+      // await ticket.update({
+      //   order: destination.index
+      // });
+      await ticket.removeFromColumnLL();
+      // await ticket.insertSameColumnLL(dest);
 
       res.sendStatus(200);
     } else {
-      await ticket.removeFromColumn();
-      await Ticket.insertDiffColumn(
-        destination.droppableId,
-        ticket.projectId,
-        destination.index
-      );
-      await ticket.update({
-        status: destination.droppableId,
-        order: destination.index
-      });
+      // await ticket.removeFromColumn();
+      // await Ticket.insertDiffColumn(
+      //   destination.droppableId,
+      //   ticket.projectId,
+      //   destination.index
+      // );
+      // await ticket.update({
+      //   status: destination.droppableId,
+      //   order: destination.index
+      // });
 
       await ticket.removeFromColumnLL();
       await ticket.insertDiffColumnLL(dest);

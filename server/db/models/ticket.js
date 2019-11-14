@@ -57,33 +57,46 @@ Ticket.maxOrder = async function(status, projectId) {
 Ticket.prototype.insertSameColumnLL = async function(dest) {
   const column = await this.getColumn();
 
+  console.log('this: ', this.id, this.next);
+  console.log('dest: ', dest.id, dest.next);
+
   if (column.ticketRoot === this.id) {
     await column.update({ ticketRoot: this.next });
   } else if (column.ticketRoot === dest.id) {
     await column.update({ ticketRoot: this.id });
   }
 
-  await Ticket.update(
+  const [a, b] = await Ticket.update(
     { next: this.next || null },
     {
       where: {
         projectId: this.projectId,
         next: this.id
-      }
+      },
+      returning: true
     }
   );
 
-  await this.update({ next: dest.next });
+  console.log(a, b[0].dataValues);
 
-  await Ticket.update(
-    { next: this.id || null },
-    {
-      where: {
-        projectId: this.projectId,
-        id: dest.id
-      }
-    }
-  );
+  const destTicket = await Ticket.findByPk(dest.id);
+
+  // console.log('first: ', destTicket.dataValues);
+
+  // if (destTicket.next === this.id) {
+  //   await destTicket.update({ next: this.next });
+  //   await this.update({ next: destTicket.id });
+  // } else {
+  await this.update({ next: destTicket.id });
+
+  console.log(this.dataValues);
+
+  // }
+  if (b[0].id !== destTicket.id) {
+    // await destTicket.update({ next: this.id || null });
+  }
+
+  console.log(destTicket.dataValues);
 };
 
 Ticket.prototype.removeFromColumnLL = async function() {
@@ -114,27 +127,22 @@ Ticket.prototype.insertDiffColumnLL = async function(dest) {
     await destColumn.update({ ticketRoot: this.id });
   }
 
-  // await Ticket.update(
-  //   { next: this.id },
-  //   {
-  //     where: {
-  //       projectId: this.projectId,
-  //       id: dest.id
-  //     }
-  //   }
-  // );
-
-  await Ticket.update(
+  const [a, b] = await Ticket.update(
     { next: this.id },
     {
       where: {
         projectId: this.projectId,
         next: dest.id
       }
-    }
+    },
+    { returning: true }
   );
 
+  console.log(a, b);
+
   await this.update({ next: dest.id, columnId: destColumn.id });
+
+  // console.log(this);
 };
 
 Ticket.prototype.insertSameColumn = async function(src, dest) {
