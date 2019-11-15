@@ -27,14 +27,7 @@ export const addUser = user => ({
   user
 });
 
-export const updateColumnsThunk = (
-  result,
-  src,
-  dest,
-  srcIdx,
-  destIdx,
-  destColumnId
-) => {
+export const updateColumnsThunk = (result, dest) => {
   return async dispatch => {
     try {
       console.log(destColumnId);
@@ -43,11 +36,7 @@ export const updateColumnsThunk = (
         `/api/tickets/${result.draggableId}/reorder`,
         {
           result,
-          src,
-          dest,
-          srcIdx,
-          destIdx,
-          destColumnId
+          dest
         }
       );
     } catch (error) {

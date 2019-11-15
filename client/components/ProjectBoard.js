@@ -103,14 +103,8 @@ class ProjectBoard extends React.Component {
     this.props.reorder(
       result,
       this.props.allTicketsObject[
-        this.props.llColumns[source.droppableId].taskIds[source.index]
-      ],
-      this.props.allTicketsObject[
         this.props.llColumns[destination.droppableId].taskIds[destination.index]
-      ],
-      source.index,
-      destination.index,
-      destination.droppableId
+      ]
     ); //backend
 
     const newProps = handleDragProps(
@@ -120,17 +114,15 @@ class ProjectBoard extends React.Component {
       this.props
     );
 
-    console.log(newProps.columns);
-
     this.props.reorderProps(newProps.columns); //frontend
 
     socket.emit('reorder', this.props.match.params.id, newProps.columns);
   };
   render() {
-    console.log(this.props);
-
-    if (!this.props.llColumns[1] || !this.props.allTickets) {
-      console.log('AIYAH');
+    if (
+      !this.props.llColumns[Object.keys(this.props.llColumns)[0]] ||
+      !this.props.allTickets
+    ) {
       return '';
     }
 
@@ -266,10 +258,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadTickets: () => {
       dispatch(getTicketsThunk(projectId));
     },
-    reorder: (result, src, dest, srcIdx, destIdx, destColumnId) => {
-      dispatch(
-        updateColumnsThunk(result, src, dest, srcIdx, destIdx, destColumnId)
-      );
+    reorder: (result, dest) => {
+      dispatch(updateColumnsThunk(result, dest));
     },
     reorderProps: columns => {
       dispatch(reorderTickets(columns));

@@ -31,28 +31,28 @@ const Ticket = db.define('ticket', {
     allowNull: false,
     defaultValue: 'to_do'
   },
-  order: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    defaultValue: 0,
-    min: 0
-  },
+  // order: {
+  //   type: Sequelize.INTEGER,
+  //   allowNull: false,
+  //   defaultValue: 0,
+  //   min: 0
+  // },
   next: {
     type: Sequelize.INTEGER
   }
 });
 
-Ticket.maxOrder = async function(status, projectId) {
-  const max = await Ticket.findAll({
-    where: {
-      status,
-      projectId
-    },
-    attributes: [Sequelize.fn('MAX', Sequelize.col('order'))],
-    raw: true
-  });
-  return max;
-};
+// Ticket.maxOrder = async function(status, projectId) {
+//   const max = await Ticket.findAll({
+//     where: {
+//       status,
+//       projectId
+//     },
+//     attributes: [Sequelize.fn('MAX', Sequelize.col('order'))],
+//     raw: true
+//   });
+//   return max;
+// };
 
 Ticket.prototype.insertSameColumnLL = async function(dest, srcIdx, destIdx) {
   const column = await this.getColumn();
@@ -140,50 +140,50 @@ Ticket.prototype.insertDiffColumnLL = async function(dest, destColumnId) {
   await this.update({ next: dest.id, columnId: destColumnId });
 };
 
-Ticket.prototype.insertSameColumn = async function(src, dest) {
-  if (src > dest) {
-    await Ticket.increment('order', {
-      where: {
-        status: this.status,
-        projectId: this.projectId,
-        order: { [Op.lt]: src, [Op.gte]: dest }
-      },
-      raw: true
-    });
-  }
+// Ticket.prototype.insertSameColumn = async function(src, dest) {
+//   if (src > dest) {
+//     await Ticket.increment('order', {
+//       where: {
+//         status: this.status,
+//         projectId: this.projectId,
+//         order: { [Op.lt]: src, [Op.gte]: dest }
+//       },
+//       raw: true
+//     });
+//   }
 
-  if (src < dest) {
-    await Ticket.decrement('order', {
-      where: {
-        status: this.status,
-        projectId: this.projectId,
-        order: { [Op.gt]: src, [Op.lte]: dest }
-      },
-      raw: true
-    });
-  }
-};
+//   if (src < dest) {
+//     await Ticket.decrement('order', {
+//       where: {
+//         status: this.status,
+//         projectId: this.projectId,
+//         order: { [Op.gt]: src, [Op.lte]: dest }
+//       },
+//       raw: true
+//     });
+//   }
+// };
 
-Ticket.prototype.removeFromColumn = async function() {
-  await Ticket.decrement('order', {
-    where: {
-      status: this.status,
-      projectId: this.projectId,
-      order: { [Op.gt]: this.order }
-    },
-    raw: true
-  });
-};
+// Ticket.prototype.removeFromColumn = async function() {
+//   await Ticket.decrement('order', {
+//     where: {
+//       status: this.status,
+//       projectId: this.projectId,
+//       order: { [Op.gt]: this.order }
+//     },
+//     raw: true
+//   });
+// };
 
-Ticket.insertDiffColumn = async function(status, projectId, dest) {
-  await Ticket.increment('order', {
-    where: {
-      status,
-      projectId,
-      order: { [Op.gte]: dest }
-    },
-    raw: true
-  });
-};
+// Ticket.insertDiffColumn = async function(status, projectId, dest) {
+//   await Ticket.increment('order', {
+//     where: {
+//       status,
+//       projectId,
+//       order: { [Op.gte]: dest }
+//     },
+//     raw: true
+//   });
+// };
 
 module.exports = Ticket;

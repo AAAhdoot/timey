@@ -107,16 +107,21 @@ router.post('/:id', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          const maxOrder = await Ticket.maxOrder('to_do', project.id);
-
-          const order = maxOrder[0].max ? maxOrder[0].max + 1 : 0;
+          const toDoColumn = await Column.findOne({
+            where: {
+              name: 'To Do',
+              projectId: Number(req.params.id)
+            }
+          });
 
           const newTicket = await Ticket.create({
             title,
             description,
             points,
-            order
+            next: null
           });
+
+          await newTicket.insertDiffColumnLL(null, toDoColumn.id);
 
           await newTicket.setProject(project);
 
@@ -143,22 +148,7 @@ router.get('/:id/tickets', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          const statuses = ['to_do', 'in_progress', 'in_review', 'done'];
-
           const result = {};
-
-          for (let i = 0; i < statuses.length; i++) {
-            result[statuses[i]] = await Ticket.findAll({
-              where: {
-                projectId: req.params.id,
-                status: statuses[i]
-              },
-              order: [['order', 'ASC']],
-              attributes: ['id'],
-              raw: true
-            });
-          }
-
           result.tickets = await project.getTickets({ include: User });
 
           let llResult = {};
