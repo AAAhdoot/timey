@@ -107,7 +107,10 @@ class ProjectBoard extends React.Component {
       ],
       this.props.allTicketsObject[
         this.props.llColumns[destination.droppableId].taskIds[destination.index]
-      ]
+      ],
+      source.index,
+      destination.index,
+      destination.droppableId
     ); //backend
 
     const newProps = handleDragProps(
@@ -355,8 +358,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadTickets: () => {
       dispatch(getTicketsThunk(projectId));
     },
-    reorder: (result, src, dest) => {
-      dispatch(updateColumnsThunk(result, src, dest));
+    reorder: (result, src, dest, srcIdx, destIdx, destColumnId) => {
+      dispatch(
+        updateColumnsThunk(result, src, dest, srcIdx, destIdx, destColumnId)
+      );
     },
     reorderProps: columns => {
       dispatch(reorderTickets(columns));

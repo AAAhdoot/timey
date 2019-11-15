@@ -54,11 +54,8 @@ Ticket.maxOrder = async function(status, projectId) {
   return max;
 };
 
-Ticket.prototype.insertSameColumnLL = async function(dest) {
+Ticket.prototype.insertSameColumnLL = async function(dest, srcIdx, destIdx) {
   const column = await this.getColumn();
-
-  console.log('this: ', this.id, this.next);
-  console.log('dest: ', dest.id, dest.next);
 
   if (column.ticketRoot === this.id) {
     await column.update({ ticketRoot: this.next });
@@ -66,37 +63,26 @@ Ticket.prototype.insertSameColumnLL = async function(dest) {
     await column.update({ ticketRoot: this.id });
   }
 
-  const [a, b] = await Ticket.update(
-    { next: this.next || null },
-    {
-      where: {
-        projectId: this.projectId,
-        next: this.id
-      },
-      returning: true
-    }
-  );
-
-  console.log(a, b[0].dataValues);
+  const prev = await Ticket.findOne({
+    where: { next: this.id }
+  });
 
   const destTicket = await Ticket.findByPk(dest.id);
 
-  // console.log('first: ', destTicket.dataValues);
-
-  // if (destTicket.next === this.id) {
-  //   await destTicket.update({ next: this.next });
-  //   await this.update({ next: destTicket.id });
-  // } else {
-  await this.update({ next: destTicket.id });
-
-  console.log(this.dataValues);
-
-  // }
-  if (b[0].id !== destTicket.id) {
-    // await destTicket.update({ next: this.id || null });
+  if (prev) {
+    await prev.update({ next: this.next });
   }
 
-  console.log(destTicket.dataValues);
+  if (srcIdx < destIdx) {
+    await this.update({ next: destTicket.next });
+    await destTicket.update({ next: this.id });
+  } else {
+    const preDest = await Ticket.findOne({ where: { next: dest.id } });
+    if (preDest) {
+      await preDest.update({ next: this.id });
+    }
+    await this.update({ next: destTicket.id });
+  }
 };
 
 Ticket.prototype.removeFromColumnLL = async function() {
@@ -107,7 +93,6 @@ Ticket.prototype.removeFromColumnLL = async function() {
   }
 
   await Ticket.update(
-    // change the next ref of prev ticket to this.next
     { next: this.next || null },
     {
       where: {
@@ -120,29 +105,39 @@ Ticket.prototype.removeFromColumnLL = async function() {
   await this.update({ next: null });
 };
 
-Ticket.prototype.insertDiffColumnLL = async function(dest) {
-  const destColumn = await Column.findByPk(dest.columnId);
+Ticket.prototype.insertDiffColumnLL = async function(dest, destColumnId) {
+  const destColumn = await Column.findByPk(destColumnId);
+
+  if (!dest) {
+    // adding to end of column
+    const lastTicket = await Ticket.findOne({
+      where: { columnId: destColumnId, next: null }
+    });
+    if (lastTicket) {
+      await lastTicket.update({ next: this.id });
+    } else {
+      // column is empty
+      await destColumn.update({ ticketRoot: this.id });
+    }
+
+    await this.setColumn(destColumn);
+
+    return;
+  }
 
   if (destColumn.ticketRoot === dest.id) {
     await destColumn.update({ ticketRoot: this.id });
   }
 
-  const [a, b] = await Ticket.update(
-    { next: this.id },
-    {
-      where: {
-        projectId: this.projectId,
-        next: dest.id
-      }
-    },
-    { returning: true }
-  );
+  const prev = await Ticket.findOne({
+    where: { next: dest.id }
+  });
 
-  console.log(a, b);
+  if (prev) {
+    await prev.update({ next: this.id });
+  }
 
-  await this.update({ next: dest.id, columnId: destColumn.id });
-
-  // console.log(this);
+  await this.update({ next: dest.id, columnId: destColumnId });
 };
 
 Ticket.prototype.insertSameColumn = async function(src, dest) {

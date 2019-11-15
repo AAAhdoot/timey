@@ -152,37 +152,19 @@ router.put('/:id', async (req, res, next) => {
 
 router.put('/:id/reorder', async (req, res, next) => {
   try {
-    const { result, src, dest } = req.body;
-
-    // console.log(src, dest);
+    const { result, dest } = req.body;
 
     const { destination, source, draggableId } = result;
 
     const ticket = await Ticket.findByPk(req.params.id);
 
     if (source.droppableId === destination.droppableId) {
-      // await ticket.insertSameColumn(source.index, destination.index);
-      // await ticket.update({
-      //   order: destination.index
-      // });
-      await ticket.removeFromColumnLL();
-      // await ticket.insertSameColumnLL(dest);
+      await ticket.insertSameColumnLL(dest, source.index, destination.index);
 
       res.sendStatus(200);
     } else {
-      // await ticket.removeFromColumn();
-      // await Ticket.insertDiffColumn(
-      //   destination.droppableId,
-      //   ticket.projectId,
-      //   destination.index
-      // );
-      // await ticket.update({
-      //   status: destination.droppableId,
-      //   order: destination.index
-      // });
-
       await ticket.removeFromColumnLL();
-      await ticket.insertDiffColumnLL(dest);
+      await ticket.insertDiffColumnLL(dest, destination.droppableId);
 
       res.sendStatus(200);
     }
@@ -240,7 +222,7 @@ router.delete('/:id', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          await ticket.removeFromColumn();
+          await ticket.removeFromColumnLL();
           await ticket.destroy();
           res.sendStatus(200);
         }
