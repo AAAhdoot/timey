@@ -18,10 +18,10 @@ const Project = db.define('project', {
 
 Project.afterCreate(async project => {
   const columns = [
-    await Column.create({ name: 'to_do' }),
-    await Column.create({ name: 'in_progress' }),
-    await Column.create({ name: 'in_review' }),
-    await Column.create({ name: 'done' })
+    await Column.create({ name: 'To Do' }),
+    await Column.create({ name: 'In Progress' }),
+    await Column.create({ name: 'In Review' }),
+    await Column.create({ name: 'Done' })
   ];
   for (let i = 0; i < columns.length; i++) {
     await columns[i].setProject(project);

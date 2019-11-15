@@ -135,10 +135,11 @@ export function createTicketsObject(tickets) {
 
 export function generateNewColumnsLL(payload) {
   let columns = {};
-  for (let [key, value] in payload) {
+  for (let key in payload) {
     columns[key] = {
       id: key,
-      taskIds: payload[key].map(x => x.id)
+      name: payload[key].name,
+      taskIds: payload[key].linkedList.map(x => x.id)
     };
   }
   return columns;

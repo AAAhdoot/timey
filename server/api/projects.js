@@ -166,14 +166,11 @@ router.get('/:id/tickets', async (req, res, next) => {
           for (let i = 0; i < columns.length; i++) {
             let ticketRoot = await Ticket.findByPk(columns[i].ticketRoot);
             let linkedList = [];
-            console.log('I have reached this point');
             while (ticketRoot) {
               linkedList.push(ticketRoot.dataValues);
-              console.log('inside while loop', ticketRoot.next);
               ticketRoot = await Ticket.findByPk(ticketRoot.next);
             }
-            console.log('END WHILE YAY');
-            llResult[columns[i].id] = linkedList;
+            llResult[columns[i].id] = { name: columns[i].name, linkedList };
           }
 
           result.llResult = llResult;
