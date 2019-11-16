@@ -1,6 +1,5 @@
-const React = require('react');
+import React from 'react';
 import axios from 'axios';
-//import { Button } from 'reactstrap';
 import Button from '@material-ui/core/Button';
 import socket from '../socket';
 class Timer extends React.Component {
@@ -17,14 +16,11 @@ class Timer extends React.Component {
     this.millisToMinutesAndSeconds = this.millisToMinutesAndSeconds.bind(this);
   }
 
-
-
   millisToMinutesAndSeconds(millis) {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
   }
-
 
   async componentDidMount() {
     const id = this.props.ticket.id;

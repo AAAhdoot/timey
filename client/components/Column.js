@@ -28,7 +28,7 @@ const Column = ({ columns, tickets, id, activetab, allUsers }) => {
   return (
     <Droppable droppableId={id} style={div}>
       {provided => (
-        <Col className={activetab === id ? 'show' : 'hide'}>
+        <Col className={activetab === columns[id].name ? 'show' : 'hide'}>
           <DroppableContainer provided={provided} innerRef={provided.innerRef}>
             {columns[id].taskIds.map((ticketId, index) => {
               const ticket = tickets[ticketId];

@@ -2,6 +2,7 @@ const User = require('./user');
 const Project = require('./project');
 const Ticket = require('./ticket');
 const UserTicket = require('./userTicket');
+const Column = require('./column');
 
 Project.belongsToMany(User, { through: 'user-project' });
 User.belongsToMany(Project, { through: 'user-project' });
@@ -18,9 +19,16 @@ UserTicket.belongsTo(Ticket);
 Project.hasMany(Ticket);
 Ticket.belongsTo(Project);
 
+Project.hasMany(Column);
+Column.belongsTo(Project);
+
+Column.hasMany(Ticket);
+Ticket.belongsTo(Column);
+
 module.exports = {
   User,
   Project,
   Ticket,
-  UserTicket
+  UserTicket,
+  Column
 };

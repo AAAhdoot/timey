@@ -5,10 +5,6 @@ import {
   Container,
   Row,
   Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -41,7 +37,7 @@ class ProjectBoard extends React.Component {
     this.state = {
       dropdownOpen: false,
       btnDropright: false,
-      activeTab: 'to_do'
+      activeTab: 'To Do'
     };
     this.toggle = this.toggle.bind(this);
     this.userToggle = this.userToggle.bind(this);
@@ -50,7 +46,6 @@ class ProjectBoard extends React.Component {
 
   componentDidMount() {
     const projectId = this.props.match.params.id;
-    console.log('projectId inside component did mount', projectId);
     this.props.getProject(projectId);
     this.props.loadProjects();
     this.props.loadUsers();
@@ -101,6 +96,13 @@ class ProjectBoard extends React.Component {
       return;
     }
 
+    this.props.reorder(
+      result,
+      this.props.allTicketsObject[
+        this.props.llColumns[destination.droppableId].taskIds[destination.index]
+      ]
+    ); //backend
+
     const newProps = handleDragProps(
       source,
       destination,
@@ -109,12 +111,14 @@ class ProjectBoard extends React.Component {
     );
 
     this.props.reorderProps(newProps.columns); //frontend
-    this.props.reorder(result); //backend
 
     socket.emit('reorder', this.props.match.params.id, newProps.columns);
   };
   render() {
-    if (!this.props.columns['to_do'] || !this.props.allTickets) {
+    if (
+      !this.props.llColumns[Object.keys(this.props.llColumns)[0]] ||
+      !this.props.allTickets
+    ) {
       return '';
     }
 
@@ -122,12 +126,12 @@ class ProjectBoard extends React.Component {
       <div>
         <Container className="project-board">
           <Row>
-            <Col sm={12} xs={12}  md={6}>
+            <Col sm={12} xs={12} md={6}>
               <ButtonDropdown
                 isOpen={this.state.dropdownOpen}
                 toggle={this.toggle}
               >
-                <DropdownToggle caret size="sm"   color="info" className="abcd" >
+                <DropdownToggle caret size="sm" color="info" className="abcd">
                   {this.props.project.name}
                 </DropdownToggle>
                 <DropdownMenu>
@@ -143,25 +147,25 @@ class ProjectBoard extends React.Component {
                 </DropdownMenu>
               </ButtonDropdown>
               <Link to={`/projects/${this.props.project.id}/ticketdata`}>
-                <Button color="info" size="sm"  className="abcd">
+                <Button color="info" size="sm" className="abcd">
                   Users On Project
                 </Button>
               </Link>
               <Link to={`/timesheet`}>
-                <Button color="info" size="sm"  className="abcd">
+                <Button color="info" size="sm" className="abcd">
                   Timesheets
                 </Button>
               </Link>
             </Col>
-        
-            <Col xs={12}   sm={12} md={6}   className="right-nav">
+
+            <Col xs={12} sm={12} md={6} className="right-nav">
               <Link to={`/projects/${this.props.project.id}/newticket`}>
-                <Button outline color="info" size="sm"     className="abcde" >
+                <Button outline color="info" size="sm" className="abcde">
                   New Ticket
                 </Button>
               </Link>
               <Link to={`/projects/${this.props.project.id}/adduser`}>
-                <Button outline color="info" size="sm"    className="abcde">
+                <Button outline color="info" size="sm" className="abcde">
                   Add User
                 </Button>
               </Link>
@@ -173,106 +177,40 @@ class ProjectBoard extends React.Component {
               <Col className="projectName">{this.props.project.name}</Col>
             </Row>
             <Row className="board-header">
-              <Col
-                className={classnames({
-                  active: this.state.activeTab === 'to_do'
-                })}
-                onClick={() => {
-                  this.toggleTab('to_do');
-                }}
-              >
-                To Do{' '}
-                <span>
-                  {' '}
-                  ({this.props.columns['to_do'] &&
-                    this.props.columns['to_do'].taskIds.length})
-                </span>
-              </Col>
-              <Col
-                className={classnames({
-                  active: this.state.activeTab === 'in_progress'
-                })}
-                onClick={() => {
-                  this.toggleTab('in_progress');
-                }}
-              >
-                In Progress
-                <span>
-                  {' '}
-                  ({this.props.columns['in_progress'] &&
-                    this.props.columns['in_progress'].taskIds.length})
-                </span>
-              </Col>
-              <Col
-                className={classnames({
-                  active: this.state.activeTab === 'in_review'
-                })}
-                onClick={() => {
-                  this.toggleTab('in_review');
-                }}
-              >
-                In Review{' '}
-                <span>
-                  {' '}
-                  ({(this.props.columns['in_review'] &&
-                    this.props.columns['in_review'].taskIds.length) ||
-                    0})
-                </span>
-              </Col>
-              <Col
-                className={classnames({
-                  active: this.state.activeTab === 'done'
-                })}
-                onClick={() => {
-                  this.toggleTab('done');
-                }}
-              >
-                Done{' '}
-                <span>
-                  {' '}
-                  ({(this.props.columns['done'] &&
-                    this.props.columns['done'].taskIds.length) ||
-                    0})
-                </span>
-              </Col>
+              {Object.entries(this.props.llColumns).map(([key, value]) => {
+                return (
+                  <Col
+                    className={classnames({
+                      active: this.state.activeTab === value.name
+                    })}
+                    onClick={() => {
+                      this.toggleTab(value.name);
+                    }}
+                    key={key}
+                  >
+                    {value.name}
+                    <span>({(value && value.taskIds.length) || 0})</span>
+                  </Col>
+                );
+              })}
             </Row>
 
             <Row className="board-container" activetab={this.state.activeTab}>
-              <Column
-                columns={this.props.columns}
-                id="to_do"
-                tickets={this.props.allTicketsObject}
-                tabId="1"
-                activetab={this.state.activeTab}
-                allUsers={this.props.allUsers}
-              />
-
-              <Column
-                columns={this.props.columns}
-                id="in_progress"
-                tickets={this.props.allTicketsObject}
-                tabId="2"
-                activetab={this.state.activeTab}
-                allUsers={this.props.allUsers}
-              />
-
-              <Column
-                columns={this.props.columns}
-                id="in_review"
-                tickets={this.props.allTicketsObject}
-                tabId="3"
-                activetab={this.state.activeTab}
-                allUsers={this.props.allUsers}
-              />
-
-              <Column
-                columns={this.props.columns}
-                id="done"
-                tickets={this.props.allTicketsObject}
-                tabId="4"
-                activetab={this.state.activeTab}
-                allUsers={this.props.allUsers}
-              />
+              {Object.entries(this.props.llColumns).map(
+                ([key, value], index) => {
+                  return (
+                    <Column
+                      key={key}
+                      columns={this.props.llColumns}
+                      id={key}
+                      tickets={this.props.allTicketsObject}
+                      tabId={index + 1}
+                      activetab={this.state.activeTab}
+                      allUsers={this.props.allUsers}
+                    />
+                  );
+                }
+              )}
             </Row>
           </DragDropContext>
         </Container>
@@ -285,15 +223,11 @@ const mapStateToProps = state => {
   return {
     project: state.project.project,
     projects: state.project.projects,
-    to_do: state.ticket.to_do,
-    in_progress: state.ticket.in_progress,
-    in_review: state.ticket.in_review,
-    done: state.ticket.done,
     allTickets: state.ticket.allTickets,
     allUsers: state.project.users,
     ticket: state.ticket.ticket,
     allTicketsObject: state.ticket.allTicketsObject,
-    columns: state.ticket.columns
+    llColumns: state.ticket.llColumns
   };
 };
 
@@ -315,8 +249,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadTickets: () => {
       dispatch(getTicketsThunk(projectId));
     },
-    reorder: result => {
-      dispatch(updateColumnsThunk(result, projectId));
+    reorder: (result, dest) => {
+      dispatch(updateColumnsThunk(result, dest));
     },
     reorderProps: columns => {
       dispatch(reorderTickets(columns));

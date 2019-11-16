@@ -14,7 +14,7 @@ notifications:
 install:
   - npm ci # faster, goes only from package-lock
 before_script:
-  - psql -c 'create database "timetracker-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
+  - psql -c 'create database "timey-test";' -U postgres # remember to change this name if you change it elsewhere (e.g. package.json)
 script:
   - npm test # test the code
   - npm run build-client # make the bundle
@@ -24,6 +24,6 @@ before_deploy:
 deploy:
   skip_cleanup: true # prevents travis from deleting the build
   provider: heroku
-  app: timetrackerboard # see README
+  app: timey # see README
   api_key:
     secure: iflpZvlhpDLcDWjh9dezth3hDY1N6INMLjWPk4SpTNc5z7tbLKGq1AMC7GcmxYWa4jP59VW7L8GMcCRv8QsQ80MqpkhCI2jKgXDu30Jti8+6ZRu+kHdxW9uuymMNUISqGfgSkmICeQZN3neqCeYCmyE0Jy44ejOTG8JoxJrIjZS0cCIc02HMZNEfWI6enzC5XF4t8f+1tOY+0GIb9BuCP9WNXsX8Ose1wx7avHkG/cUM678uNkN8FQs6CgcuCqhIXCxFESp59mtBUGOo5Efrjts84EoJhE4cCa3eJpiWQgsOFxxBL/CxvqtaG9+cG1Bo8DSxPUewHWiWkBrekrrXxF/MiumfB+O/qzxhK66DeJVJ50mvjrqGeJ3MZoyZD+qcMUFg//qgVZzI5bPnc7pT1LWH4G79yCblPCp3BqRXR8e+liuboJVhQzqwjAXzTDAQAdYl/2Mvfod6yNmOON2cj6vL9n4hMvbKiWyaZBvlJzh86okWBCXhZ7y4QZ/Rb5XcQeR1S3E89BWJcVbMP3LyTw1zZuDk5KTCqFMyVz8sI6dj0pcWTpQ0GV4AXKSDM2Db+1Yf1YFmv8Kz/wB311B7okCkn8YU0bt+DLDgdfVXZR91xvLxIx+wgoonMqv6gp2cEuLWqiakRQw99UybHTn5wHhBX8AkSusvyJBMrobsyTA=

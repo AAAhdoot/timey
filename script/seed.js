@@ -2,6 +2,15 @@
 /* eslint-disable max-statements */
 'use strict';
 
+const {
+  netflixObjects,
+  hersheyFrontEndObjects,
+  hersheyBackEndObjects,
+  spotifyObjects,
+  huluObjects,
+  projectObjects
+} = require('./seedData');
+
 const db = require('../server/db');
 const { User, Project, Ticket, UserTicket } = require('../server/db/models');
 
@@ -19,530 +28,62 @@ async function seed() {
     User.create({ email: 'katrina@email.com', password: '123' })
   ]);
 
-  const netflixTickets = await Promise.all([
-    Ticket.create({
-      title: 'API',
-      description: 'create routes',
-      points: 3,
-      order: 0,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'REACT component',
-      description: 'create component',
-      points: 5,
-      order: 0,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'seed file',
-      description: 'create seed file',
-      points: 3,
-      order: 0,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'bootstrap',
-      description: 'install bootstrap',
-      points: 3,
-      order: 0,
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'Logo',
-      description: 'create logo',
-      points: 3,
-      order: 1,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'edit project title',
-      description: 'ability to edit a project title',
-      points: 5,
-      order: 1,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'edit project total time',
-      description: 'ability to edit the total time of a project ',
-      points: 3,
-      order: 1,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'front end route error handling',
-      description: 'send to 404 component if not found',
-      points: 3,
-      order: 1,
-      status: 'done'
-    }),
-    Ticket.create({
-      title: '404 component',
-      description:
-        'create 404 component to render when user goes to unidentified URLs ',
-      points: 3,
-      order: 2,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'More seed file data',
-      description: 'add more data to seed file',
-      points: 5,
-      order: 2,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'timer isolation',
-      description: 'ensure that user can only start one timer at a time',
-      points: 3,
-      order: 2,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'start timer hidden',
-      description: 'hide start timer from unassigned user',
-      points: 3,
-      order: 2,
-      status: 'done'
-    })
-  ]);
+  let projects = [];
 
-  const hersheyFrontEndTickets = await Promise.all([
-    Ticket.create({
-      title: 'API',
-      description: 'create routes',
-      points: 3,
-      order: 0,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'REACT component',
-      description: 'create component',
-      points: 5,
-      order: 0,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'seed file',
-      description: 'create seed file',
-      points: 3,
-      order: 0,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'bootstrap',
-      description: 'install bootstrap',
-      points: 3,
-      order: 0,
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'timer when running fixes',
-      description: 'if timer is running, do not allow ticket to be re-assigned',
-      points: 3,
-      order: 1,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'stop/start button',
-      description: 'add stop/start button for each ticket',
-      points: 5,
-      order: 1,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'update userticket',
-      description:
-        'when a user hits the pause button the previously created userticket is updated with the exact timestamp as the end time',
-      points: 3,
-      order: 1,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'create userticket',
-      description:
-        'when a user hits the start button a userticket is created with the exact timestamp as the start time',
-      points: 3,
-      order: 1,
-
-      status: 'done'
-    }),
-    Ticket.create({
-      title: '404 component',
-      description:
-        'create 404 component to render when user goes to unidentified URLs ',
-      points: 3,
-      order: 2,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'More seed file data',
-      description: 'add more data to seed file',
-      points: 5,
-      order: 2,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'timer isolation',
-      description: 'ensure that user can only start one timer at a time',
-      points: 3,
-      order: 2,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'nav bar',
-      description: 'style navbar',
-      points: 3,
-      order: 2,
-      status: 'done'
-    })
-  ]);
-
-  const hersheyBackEndTickets = await Promise.all([
-    Ticket.create({
-      title: 'mobile styles',
-      description: 'project board component styling',
-      points: 3,
-      order: 0,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'drag and drop different columns',
-      description: 'implement drag and drop tickets between columns',
-      points: 5,
-      order: 0,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'drag and drop same columns',
-      description: 'implement drag and drop between the same column',
-      points: 3,
-      order: 0,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'drag and drop persistence',
-      description: 'drag and drop must persist upon refresh',
-      points: 3,
-      order: 0,
-
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'column stylings',
-      description: 'tickets must fit inside the columns',
-      points: 3,
-      order: 1,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'style ticket component',
-      description: 'add mobile styles to ticket component',
-      points: 5,
-      order: 1,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'edit an existing ticket',
-      description:
-        'add ability to edit an existing ticket (description, points, etc.)',
-      points: 3,
-      order: 1,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'drag and drop height issue',
-      description: 'maximize height for droppable container',
-      points: 3,
-      order: 1,
-
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'redirect after user added',
-      description: 'redirect back to project board after a user is added',
-      points: 3,
-      order: 2,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'add user to project',
-      description: 'create thunk for adding a user to a project',
-      points: 5,
-      order: 2,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'drag and drop data',
-      description: 'integrate database data with  drag and drop',
-      points: 3,
-      order: 2,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'user validation',
-      description:
-        'make sure the user making changes is assigned to the project they are accessing/editing',
-      points: 3,
-      order: 2,
-
-      status: 'done'
-    })
-  ]);
-
-  const spotifyTickets = await Promise.all([
-    Ticket.create({
-      title: 'API',
-      description: 'create routes',
-      points: 3,
-      order: 0,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'REACT component',
-      description: 'create component',
-      points: 5,
-      order: 0,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'seed file',
-      description: 'create seed file',
-      points: 3,
-      order: 0,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'bootstrap',
-      description: 'install bootstrap',
-      points: 3,
-      order: 0,
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'timer when running fixes',
-      description: 'if timer is running, do not allow ticket to be re-assigned',
-      points: 3,
-      order: 1,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'stop/start button',
-      description: 'add stop/start button for each ticket',
-      points: 5,
-      order: 1,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'update userticket',
-      description:
-        'when a user hits the pause button the previously created userticket is updated with the exact timestamp as the end time',
-      points: 3,
-      order: 1,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'create userticket',
-      description:
-        'when a user hits the start button a userticket is created with the exact timestamp as the start time',
-      points: 3,
-      order: 1,
-
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'redirect after user added',
-      description: 'redirect back to project board after a user is added',
-      points: 3,
-      order: 2,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'add user to project',
-      description: 'create thunk for adding a user to a project',
-      points: 5,
-      order: 2,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'drag and drop data',
-      description: 'integrate database data with  drag and drop',
-      points: 3,
-      order: 2,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'user validation',
-      description:
-        'make sure the user making changes is assigned to the project they are accessing/editing',
-      points: 3,
-      order: 2,
-
-      status: 'done'
-    })
-  ]);
-
-  const huluTickets = await Promise.all([
-    Ticket.create({
-      title: 'API',
-      description: 'create routes',
-      points: 3,
-      order: 0,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'REACT component',
-      description: 'create component',
-      points: 5,
-      order: 0,
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'seed file',
-      description: 'create seed file',
-      points: 3,
-      order: 0,
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'bootstrap',
-      description: 'install bootstrap',
-      points: 3,
-      order: 0,
-      status: 'done'
-    }),
-    Ticket.create({
-      title: 'timer when running fixes',
-      description: 'if timer is running, do not allow ticket to be re-assigned',
-      points: 3,
-      order: 1,
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'stop/start button',
-      description: 'add stop/start button for each ticket',
-      points: 5,
-      order: 1,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'update userticket',
-      description:
-        'when a user hits the pause button the previously created userticket is updated with the exact timestamp as the end time',
-      points: 3,
-      order: 1,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'create userticket',
-      description:
-        'when a user hits the start button a userticket is created with the exact timestamp as the start time',
-      points: 3,
-      order: 1,
-
-      status: 'done'
-    }),
-    Ticket.create({
-      title: '404 component',
-      description:
-        'create 404 component to render when user goes to unidentified URLs ',
-      points: 3,
-      order: 2,
-
-      status: 'to_do'
-    }),
-    Ticket.create({
-      title: 'More seed file data',
-      description: 'add more data to seed file',
-      points: 5,
-      order: 2,
-
-      status: 'in_progress'
-    }),
-    Ticket.create({
-      title: 'timer isolation',
-      description: 'ensure that user can only start one timer at a time',
-      points: 3,
-      order: 2,
-
-      status: 'in_review'
-    }),
-    Ticket.create({
-      title: 'nav bar',
-      description: 'style navbar',
-      points: 3,
-      order: 2,
-      status: 'done'
-    })
-  ]);
-
-  const projects = await Promise.all([
-    Project.create({
-      name: 'Netflix',
-      totalTime: 20
-    }),
-    Project.create({
-      name: 'Hersheys Frontend',
-      totalTime: 30
-    }),
-    Project.create({
-      name: 'Hersheys Backend',
-      totalTime: 60
-    }),
-    Project.create({
-      name: 'Spotify',
-      totalTime: 30
-    }),
-    Project.create({
-      name: 'Hulu',
-      totalTime: 60
-    })
-  ]);
-
-  for (let i = 0; i < projects.length; i++) {
-    await projects[i].setUsers(users);
+  for (let i = 0; i < projectObjects.length; i++) {
+    let project = await Project.create(projectObjects[i]);
+    await project.setUsers(users);
+    projects.push(project);
   }
 
-  for (let i = 0; i < netflixTickets.length; i++) {
-    await netflixTickets[i].setProject(projects[0]);
-  }
+  const convertObjectsToInstances = async (objects, project) => {
+    let tickets = [];
+    for (let i = 0; i < objects.length; i++) {
+      const ticket = await Ticket.create(objects[i]);
+      await ticket.setProject(project);
+      tickets.push(ticket);
+      if (tickets[i - 4]) {
+        await tickets[i - 4].update({ next: ticket.id });
+      }
+    }
+    return tickets;
+  };
 
-  for (let i = 0; i < hersheyFrontEndTickets.length; i++) {
-    await hersheyFrontEndTickets[i].setProject(projects[1]);
-  }
+  const netflixTickets = await convertObjectsToInstances(
+    netflixObjects,
+    projects[0]
+  );
+  const hersheyFrontEndTickets = await convertObjectsToInstances(
+    hersheyFrontEndObjects,
+    projects[1]
+  );
+  const hersheyBackEndTickets = await convertObjectsToInstances(
+    hersheyBackEndObjects,
+    projects[2]
+  );
+  const spotifyTickets = await convertObjectsToInstances(
+    spotifyObjects,
+    projects[3]
+  );
+  const huluTickets = await convertObjectsToInstances(huluObjects, projects[4]);
 
-  for (let i = 0; i < hersheyBackEndTickets.length; i++) {
-    await hersheyBackEndTickets[i].setProject(projects[2]);
-  }
+  const netflixColumns = await projects[0].getColumns();
+  const hersheyFrontEndColumns = await projects[1].getColumns();
+  const hersheyBackEndColumns = await projects[2].getColumns();
+  const spotifyColumns = await projects[3].getColumns();
+  const huluColumns = await projects[4].getColumns();
 
-  for (let i = 0; i < spotifyTickets.length; i++) {
-    await spotifyTickets[i].setProject(projects[3]);
-  }
+  const addRootsToColumns = async (columns, tickets) => {
+    for (let i = 0; i < columns.length; i++) {
+      await columns[i].update({ ticketRoot: tickets[i].id });
+    }
+  };
 
-  for (let i = 0; i < huluTickets.length; i++) {
-    await huluTickets[i].setProject(projects[4]);
-  }
+  await addRootsToColumns(netflixColumns, netflixTickets);
+  await addRootsToColumns(hersheyFrontEndColumns, hersheyFrontEndTickets);
+  await addRootsToColumns(hersheyBackEndColumns, hersheyBackEndTickets);
+  await addRootsToColumns(spotifyColumns, spotifyTickets);
+  await addRootsToColumns(huluColumns, huluTickets);
 
   const allTickets = netflixTickets
     .concat(hersheyFrontEndTickets)
@@ -551,7 +92,6 @@ async function seed() {
     .concat(huluTickets);
 
   // console.log(randomDate(new Date(2012, 0, 1), new Date()));
-  const uTix = [];
 
   for (let i = 0; i < allTickets.length; i++) {
     for (let j = 0; j < users.length; j++) {

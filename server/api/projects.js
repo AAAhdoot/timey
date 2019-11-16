@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-lonely-if */
 const router = require('express').Router();
-const { Project, Ticket, User } = require('../db/models');
+const { Project, Ticket, User, Column } = require('../db/models');
 module.exports = router;
 
 router.get('/all', async (req, res, next) => {
@@ -107,16 +107,21 @@ router.post('/:id', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          const maxOrder = await Ticket.maxOrder('to_do', project.id);
-
-          const order = maxOrder[0].max ? maxOrder[0].max + 1 : 0;
+          const toDoColumn = await Column.findOne({
+            where: {
+              name: 'To Do',
+              projectId: Number(req.params.id)
+            }
+          });
 
           const newTicket = await Ticket.create({
             title,
             description,
             points,
-            order
+            next: null
           });
+
+          await newTicket.insertDiffColumnLL(null, toDoColumn.id);
 
           await newTicket.setProject(project);
 
@@ -129,6 +134,7 @@ router.post('/:id', async (req, res, next) => {
   }
 });
 
+// get all the tickets for a specific project
 router.get('/:id/tickets', async (req, res, next) => {
   try {
     if (!req.isAuthenticated()) {
@@ -142,24 +148,28 @@ router.get('/:id/tickets', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          const statuses = ['to_do', 'in_progress', 'in_review', 'done'];
-
           const result = {};
+          const tickets = [];
 
-          for (let i = 0; i < statuses.length; i++) {
-            result[statuses[i]] = await Ticket.findAll({
-              where: {
-                projectId: req.params.id,
-                status: statuses[i]
-              },
-              order: [['order', 'ASC']],
-              attributes: ['id'],
-              raw: true
+          let llResult = {};
+          let columns = await project.getColumns();
+          for (let i = 0; i < columns.length; i++) {
+            let ticketRoot = await Ticket.findByPk(columns[i].ticketRoot, {
+              include: User
             });
+            let linkedList = [];
+            while (ticketRoot) {
+              linkedList.push(ticketRoot);
+              tickets.push(ticketRoot);
+              ticketRoot = await Ticket.findByPk(ticketRoot.next, {
+                include: User
+              });
+            }
+            llResult[columns[i].id] = { name: columns[i].name, linkedList };
           }
 
-          result.tickets = await project.getTickets({ include: User });
-
+          result.llResult = llResult;
+          result.tickets = tickets;
           res.json(result);
         }
       }
@@ -169,7 +179,7 @@ router.get('/:id/tickets', async (req, res, next) => {
   }
 });
 
-/* This route gets all the users for a specifc project  */
+/* This route gets all the users for a specific project  */
 router.get('/:id/users', async (req, res, next) => {
   try {
     if (!req.isAuthenticated()) {

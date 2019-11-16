@@ -55,6 +55,7 @@ export const getTicketsThunk = id => {
   return async dispatch => {
     try {
       const { data } = await axios.get(`/api/projects/${id}/tickets/`);
+      console.log(data);
       dispatch(getTickets(data));
     } catch (err) {
       console.log(err);

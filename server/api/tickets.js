@@ -98,12 +98,11 @@ router.post('/', async (req, res, next) => {
     if (!req.isAuthenticated()) {
       res.sendStatus(403);
     } else {
-      const { title, description, points, status } = req.body;
+      const { title, description, points } = req.body;
       const newTicket = await Ticket.create({
         title,
         description,
-        points,
-        status
+        points
       });
       res.json(newTicket);
     }
@@ -117,7 +116,7 @@ router.put('/:id', async (req, res, next) => {
     if (!req.isAuthenticated()) {
       res.sendStatus(403);
     } else {
-      const { title, description, points, status, userId } = req.body;
+      const { title, description, points, userId } = req.body;
       const ticket = await Ticket.findByPk(req.params.id);
       const project = await Project.findByPk(ticket.projectId);
       if (!ticket || !project) {
@@ -130,8 +129,7 @@ router.put('/:id', async (req, res, next) => {
           await ticket.update({
             title,
             description,
-            points,
-            status
+            points
           });
         }
         if (userId) {
@@ -152,30 +150,19 @@ router.put('/:id', async (req, res, next) => {
 
 router.put('/:id/reorder', async (req, res, next) => {
   try {
-    const { result } = req.body;
+    const { result, dest } = req.body;
 
     const { destination, source, draggableId } = result;
 
     const ticket = await Ticket.findByPk(req.params.id);
 
     if (source.droppableId === destination.droppableId) {
-      await ticket.insertSameColumn(source.index, destination.index);
-      await ticket.update({
-        order: destination.index
-      });
+      await ticket.insertSameColumnLL(dest, source.index, destination.index);
 
       res.sendStatus(200);
     } else {
-      await ticket.removeFromColumn();
-      await Ticket.insertDiffColumn(
-        destination.droppableId,
-        ticket.projectId,
-        destination.index
-      );
-      await ticket.update({
-        status: destination.droppableId,
-        order: destination.index
-      });
+      await ticket.removeFromColumnLL();
+      await ticket.insertDiffColumnLL(dest, destination.droppableId);
 
       res.sendStatus(200);
     }
@@ -233,7 +220,7 @@ router.delete('/:id', async (req, res, next) => {
         if (!authorized) {
           res.sendStatus(403);
         } else {
-          await ticket.removeFromColumn();
+          await ticket.removeFromColumnLL();
           await ticket.destroy();
           res.sendStatus(200);
         }

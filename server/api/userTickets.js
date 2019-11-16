@@ -42,7 +42,6 @@ module.exports = router;
 // });
 
 // returns the open userTicket for a specific ticketId
-// NOT IMPLEMENTED YET
 router.get('/:ticketId/open', async (req, res, next) => {
   try {
     if (!req.isAuthenticated()) {
