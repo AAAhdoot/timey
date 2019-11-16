@@ -4,7 +4,7 @@ Timey is a project management board with accountability. It allows users to crea
 
 ### Deployed Site
 
-[Timey](https://timetrackerboard.herokuapp.com)
+[Timey](https://timey.herokuapp.com)
 
 ### Technologies:
 
