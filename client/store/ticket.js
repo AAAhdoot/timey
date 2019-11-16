@@ -47,6 +47,7 @@ export default function(state = initialState, action) {
       newState.ticket = action.ticket;
       return newState;
     case ACTIONS.REORDER_TICKETS:
+      console.log(action.payload);
       newState.llColumns = action.payload;
       return newState;
     case ACTIONS.REMOVE_TICKET:

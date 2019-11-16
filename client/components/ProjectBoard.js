@@ -180,6 +180,7 @@ class ProjectBoard extends React.Component {
               {Object.entries(this.props.llColumns).map(([key, value]) => {
                 return (
                   <Col
+                    style={{ display: 'flex', justifyContent: 'center' }}
                     className={classnames({
                       active: this.state.activeTab === value.name
                     })}
