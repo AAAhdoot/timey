@@ -6,11 +6,6 @@ import { CSVLink } from 'react-csv';
 import { millisConverted } from '../utils';
 import { Button } from 'reactstrap';
 
-// import { DateRangePicker } from 'react-dates';
-// import 'react-dates/lib/css/_datepicker.css';
-// import 'react-dates/initialize';
-// import DRP from './DRP';
-
 import Picker from './Picker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -84,12 +79,6 @@ class TimeSheet extends React.Component {
         accessor: d => new Date(d.start).toString(),
         Cell: d => <span>{moment(d.original.start).format('llll')}</span>,
         Filter: cellInfo => (
-          // <DRP
-          //   cellInfo={cellInfo}
-          //   handleChange={this.handleChange}
-          //   startDate={this.state.startDate}
-          //   endDate={this.state.endDate}
-          // />
           <Picker
             cellInfo={cellInfo}
             handleStartChange={this.handleStartChange}
@@ -151,15 +140,6 @@ class TimeSheet extends React.Component {
       this.csvLink.link.click();
     });
   };
-
-  // getTheadThProps = (state, rowInfo, column, instance) => ({
-  //   onClick: () => {
-  //     // Do whatever else you need to
-  //     if (column.sortable !== false) {
-  //       instance.sortColumn(column);
-  //     }
-  //   }
-  // });
 
   addFilterPlaceholder = () => {
     const filters = document.querySelectorAll('div.rt-th > input');

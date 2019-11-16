@@ -5,10 +5,6 @@ import {
   Container,
   Row,
   Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -41,7 +37,7 @@ class ProjectBoard extends React.Component {
     this.state = {
       dropdownOpen: false,
       btnDropright: false,
-      activeTab: 'to_do'
+      activeTab: 'To Do'
     };
     this.toggle = this.toggle.bind(this);
     this.userToggle = this.userToggle.bind(this);
@@ -185,10 +181,10 @@ class ProjectBoard extends React.Component {
                 return (
                   <Col
                     className={classnames({
-                      active: this.state.activeTab === key
+                      active: this.state.activeTab === value.name
                     })}
                     onClick={() => {
-                      this.toggleTab(key);
+                      this.toggleTab(value.name);
                     }}
                     key={key}
                   >
@@ -227,15 +223,10 @@ const mapStateToProps = state => {
   return {
     project: state.project.project,
     projects: state.project.projects,
-    to_do: state.ticket.to_do,
-    in_progress: state.ticket.in_progress,
-    in_review: state.ticket.in_review,
-    done: state.ticket.done,
     allTickets: state.ticket.allTickets,
     allUsers: state.project.users,
     ticket: state.ticket.ticket,
     allTicketsObject: state.ticket.allTicketsObject,
-    columns: state.ticket.columns,
     llColumns: state.ticket.llColumns
   };
 };

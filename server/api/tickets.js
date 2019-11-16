@@ -98,12 +98,11 @@ router.post('/', async (req, res, next) => {
     if (!req.isAuthenticated()) {
       res.sendStatus(403);
     } else {
-      const { title, description, points, status } = req.body;
+      const { title, description, points } = req.body;
       const newTicket = await Ticket.create({
         title,
         description,
-        points,
-        status
+        points
       });
       res.json(newTicket);
     }
@@ -117,7 +116,7 @@ router.put('/:id', async (req, res, next) => {
     if (!req.isAuthenticated()) {
       res.sendStatus(403);
     } else {
-      const { title, description, points, status, userId } = req.body;
+      const { title, description, points, userId } = req.body;
       const ticket = await Ticket.findByPk(req.params.id);
       const project = await Project.findByPk(ticket.projectId);
       if (!ticket || !project) {
@@ -130,8 +129,7 @@ router.put('/:id', async (req, res, next) => {
           await ticket.update({
             title,
             description,
-            points,
-            status
+            points
           });
         }
         if (userId) {

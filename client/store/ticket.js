@@ -2,11 +2,7 @@
 /* eslint-disable complexity */
 
 import * as ACTIONS from '../actions/action-types';
-import {
-  createTicketsObject,
-  generateNewColumns,
-  generateNewColumnsLL
-} from '../utils';
+import { createTicketsObject, generateNewColumnsLL } from '../utils';
 
 const initialState = {
   ticket: {},
@@ -57,7 +53,6 @@ export default function(state = initialState, action) {
       newState.allTickets = newState.allTickets.filter(
         ticket => ticket.id !== action.ticket.id
       );
-
       newState.llColumns[action.ticket.columnId].taskIds = newState.llColumns[
         action.ticket.columnId
       ].taskIds.filter(id => id !== action.ticket.id);

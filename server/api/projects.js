@@ -149,22 +149,27 @@ router.get('/:id/tickets', async (req, res, next) => {
           res.sendStatus(403);
         } else {
           const result = {};
-          result.tickets = await project.getTickets({ include: User });
+          const tickets = [];
 
           let llResult = {};
           let columns = await project.getColumns();
           for (let i = 0; i < columns.length; i++) {
-            let ticketRoot = await Ticket.findByPk(columns[i].ticketRoot);
+            let ticketRoot = await Ticket.findByPk(columns[i].ticketRoot, {
+              include: User
+            });
             let linkedList = [];
             while (ticketRoot) {
-              linkedList.push(ticketRoot.dataValues);
-              ticketRoot = await Ticket.findByPk(ticketRoot.next);
+              linkedList.push(ticketRoot);
+              tickets.push(ticketRoot);
+              ticketRoot = await Ticket.findByPk(ticketRoot.next, {
+                include: User
+              });
             }
             llResult[columns[i].id] = { name: columns[i].name, linkedList };
           }
 
           result.llResult = llResult;
-
+          result.tickets = tickets;
           res.json(result);
         }
       }
