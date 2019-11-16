@@ -26,8 +26,13 @@ const AuthForm = props => {
   const { name, displayName, handleSubmit, error, classes } = props;
 
   return (
-   <div  id='loginform' >
-      <form id='loginForm1'className={classes.container} onSubmit={handleSubmit} name={name}>
+    <div id="loginform">
+      <form
+        id="loginForm1"
+        className={classes.container}
+        onSubmit={handleSubmit}
+        name={name}
+      >
         {/* I am saving the old formfields until these pass testing  */}
         {/* <div>
           <label htmlFor="email">
@@ -44,47 +49,51 @@ const AuthForm = props => {
         <div>
           <button type="submit">{displayName}</button>
         </div> */}
-      <div> <TextField
-          required
-          id="outlined-with-placeholder"
-          label="Email"
-          placeholder="Email"
-          margin="normal"
-          variant="outlined"
-          input="email"
-          type="email"
-          name="email"
-        />
+        <div>
+          {' '}
+          <TextField
+            required
+            id="outlined-with-placeholder"
+            label="Email"
+            placeholder="Email"
+            margin="normal"
+            variant="outlined"
+            input="email"
+            type="email"
+            name="email"
+          />
         </div>
         <div>
-        <TextField
-          required
-          id="outlined-password-input"
-          label="Password"
-          type="password"
-          className={classes.textField}
-          name="password"
-          margin="normal"
-          variant="outlined"
-        />
+          <TextField
+            required
+            id="outlined-password-input"
+            label="Password"
+            type="password"
+            className={classes.textField}
+            name="password"
+            margin="normal"
+            variant="outlined"
+          />
         </div>
         <div>
-        <Button type="submit" variant="outlined" className={classes.button}>
-          {displayName}
-        </Button>
+          <Button type="submit" variant="outlined" className={classes.button}>
+            {displayName}
+          </Button>
         </div>
         {error && error.response && <div> {error.response.data} </div>}
         {/* <div> <form method='get' action='/auth/google'>
       <button type='submit'  className="loginBtn loginBtn--google">Login with Google</button>
     </form></div> */}
       </form>
-    
+
       {/* Commenting out google OAuth until its implemented  */}
       {/* <a href="/auth/google">{displayName} with Google</a> */}
-      <form method='get' action='/auth/google'>
-      <button type='submit'  className="loginBtn loginBtn--google">Login with Google</button>
-    </form>
-  </div>
+      <form method="get" action="/auth/google">
+        <button type="submit" className="loginBtn loginBtn--google">
+          {name === 'login' ? 'Login with Google' : 'Sign Up with Google'}
+        </button>
+      </form>
+    </div>
   );
 };
 
@@ -123,12 +132,14 @@ const mapDispatch = dispatch => {
   };
 };
 
-export const Login = connect(mapLogin, mapDispatch)(
-  withStyles(styles)(AuthForm)
-);
-export const Signup = connect(mapSignup, mapDispatch)(
-  withStyles(styles)(AuthForm)
-);
+export const Login = connect(
+  mapLogin,
+  mapDispatch
+)(withStyles(styles)(AuthForm));
+export const Signup = connect(
+  mapSignup,
+  mapDispatch
+)(withStyles(styles)(AuthForm));
 
 /**
  * PROP TYPES
