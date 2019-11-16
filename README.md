@@ -21,9 +21,9 @@ Node/Express, React/Redux, PostgreSQL, Sequelize, Socket.io, D3.js, reactstrap, 
 * One way to do so:
 
 ```
-createdb timetracker
+createdb timey
 
-createdb timetracker-test
+createdb timey-test
 ```
 
 ### Running the program
