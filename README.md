@@ -1,5 +1,5 @@
 ### Important Note:
-Forked from https://github.com/green-echo/timetracker
+Forked from https://github.com/green-echo/timetracker, created by Ariel Ahdoot, Betzalel Perlow, Christina Armstrong, Katrina Rodkina
 
 ### Summary:
 
@@ -11,7 +11,7 @@ Timey is a project management board with accountability. It allows users to crea
 
 ### Technologies:
 
-Node/Express, React/Redux, PostgreSQL, Sequelize, Socket.io, D3.js, reactstrap, Moment.js, OAuth
+Node/Express, React/Redux, PostgreSQL, Sequelize, Socket.io, D3.js, reactstrap, Moment.js, OAuth, react-beautiful-dnd, Heroku
 
 ### Requirements
 
@@ -20,7 +20,7 @@ Node/Express, React/Redux, PostgreSQL, Sequelize, Socket.io, D3.js, reactstrap, 
 
 ### Before running the program locally
 
-* Make sure you have databases named "timetracker" and "timetracker-test" in order for the code to be able to access the database
+* Make sure you have databases named "timey" and "timey-test" in order for the code to be able to access the database
 * One way to do so:
 
 ```
