@@ -1,5 +1,6 @@
 ### Important Note:
-Forked from https://github.com/green-echo/timetracker, created by Ariel Ahdoot, Betzalel Perlow, Christina Armstrong, Katrina Rodkina
+- Forked from https://github.com/green-echo/timetracker 
+- originally created by Ariel Ahdoot, Betzalel Perlow, Christina Armstrong, Katrina Rodkina
 
 ### Summary:
 
