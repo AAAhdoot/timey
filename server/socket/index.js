@@ -48,6 +48,10 @@ module.exports = io => {
       socket.broadcast.to(room).emit('reorder', columns);
     });
 
+    socket.on('new column', (room, column) => {
+      socket.broadcast.to(room).emit('new column', column);
+    });
+
     socket.on('disconnect', () => {
       console.log(`Connection ${socket.id} has left the building`);
     });

@@ -55,8 +55,9 @@ export const createColumnThunk = (column, id) => {
         `/api/projects/${id}/addColumn`,
         column
       );
-      dispatch(createColumn(column));
-      // socket.emit('new ticket', id, data);
+
+      dispatch(createColumn(data));
+      socket.emit('new column', id, data);
       history.push(`/projects/${id}`);
     } catch (err) {
       console.log(err);

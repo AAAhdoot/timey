@@ -4,7 +4,8 @@ import {
   createTicket,
   deleteTicket,
   reorderTickets,
-  updateTicket
+  updateTicket,
+  createColumn
 } from './actions/ticket';
 
 const socket = io(window.location.origin);
@@ -27,6 +28,10 @@ socket.on('reorder', columns => {
 
 socket.on('update ticket', ticket => {
   store.dispatch(updateTicket(ticket));
+});
+
+socket.on('new column', column => {
+  store.dispatch(createColumn(column));
 });
 
 export default socket;
