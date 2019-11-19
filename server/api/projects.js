@@ -117,8 +117,7 @@ router.post('/:id', async (req, res, next) => {
           const newTicket = await Ticket.create({
             title,
             description,
-            points,
-            next: null
+            points
           });
 
           await newTicket.insertDiffColumnLL(null, toDoColumn.id);
@@ -126,6 +125,36 @@ router.post('/:id', async (req, res, next) => {
           await newTicket.setProject(project);
 
           res.json(newTicket);
+        }
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+// add a column to a specific project
+router.post('/:id/addColumn', async (req, res, next) => {
+  try {
+    if (!req.isAuthenticated()) {
+      res.sendStatus(403);
+    } else {
+      const { name } = req.body;
+      const project = await Project.findByPk(Number(req.params.id));
+      if (!project) {
+        next();
+      } else {
+        const authorized = await project.hasUser(req.user);
+        if (!authorized) {
+          res.sendStatus(403);
+        } else {
+          const newColumn = await Column.create({
+            name
+          });
+
+          await newColumn.setProject(project);
+
+          res.json(newColumn);
         }
       }
     }

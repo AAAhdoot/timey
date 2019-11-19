@@ -62,6 +62,21 @@ export default function(state = initialState, action) {
       delete newState.allTicketsObject[action.ticket.id];
       newState.ticket = {};
       return newState;
+    case ACTIONS.CREATE_COLUMN:
+      let newColumn = {
+        id: action.column.id,
+        name: action.column.name,
+        taskIds: []
+      };
+      newState.llColumns = {
+        ...newState.llColumns,
+        [action.column.id]: newColumn
+      };
+      return newState;
+    case ACTIONS.REMOVE_COLUMN:
+      newState.llColumns = Object.assign({}, newState.llColumns);
+      delete newState.llColumns[action.column.id];
+      return newState;
     default:
       return state;
   }

@@ -123,6 +123,8 @@ class ProjectBoard extends React.Component {
       return '';
     }
 
+    console.log(this.props);
+
     return (
       <div>
         <Container className="project-board">
@@ -160,6 +162,11 @@ class ProjectBoard extends React.Component {
             </Col>
 
             <Col xs={12} sm={12} md={6} className="right-nav">
+              <Link to={`/projects/${this.props.project.id}/newcolumn`}>
+                <Button outline color="info" size="sm" className="abcde">
+                  New Column
+                </Button>
+              </Link>
               <Link to={`/projects/${this.props.project.id}/newticket`}>
                 <Button outline color="info" size="sm" className="abcde">
                   New Ticket

@@ -3,6 +3,16 @@ import * as ACTIONS from '../actions/action-types';
 import history from '../history';
 import socket from '../socket';
 
+export const deleteColumn = column => ({
+  type: ACTIONS.REMOVE_COLUMN,
+  ticket
+});
+
+export const createColumn = column => ({
+  type: ACTIONS.CREATE_COLUMN,
+  column
+});
+
 export const reorderTickets = payload => ({
   type: ACTIONS.REORDER_TICKETS,
   payload
@@ -37,6 +47,34 @@ export const addUserToTicket = userId => ({
   type: ACTIONS.ADD_USER_TO_TICKET,
   userId
 });
+
+export const createColumnThunk = (column, id) => {
+  return async dispatch => {
+    try {
+      const { data } = await axios.post(
+        `/api/projects/${id}/addColumn`,
+        column
+      );
+      dispatch(createColumn(column));
+      // socket.emit('new ticket', id, data);
+      history.push(`/projects/${id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const removeColumnThunk = column => {
+  return async dispatch => {
+    try {
+      await axios.delete(`/api/columns/${column.id}`);
+      dispatch(deleteColumn(column));
+      // socket.emit('remove ticket', ticket.projectId, ticket);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
 
 export const createTicketThunk = (ticket, id) => {
   return async dispatch => {
