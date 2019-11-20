@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 //
 import React from 'react';
+import MediaQuery from 'react-responsive';
 import {
   Button,
   Container,
@@ -38,7 +39,7 @@ class ProjectBoard extends React.Component {
     this.state = {
       dropdownOpen: false,
       btnDropright: false,
-      activeTab: 'To Do'
+      activeTab: -1
     };
     this.toggle = this.toggle.bind(this);
     this.userToggle = this.userToggle.bind(this);
@@ -122,8 +123,13 @@ class ProjectBoard extends React.Component {
     ) {
       return '';
     }
+    let activeKey = this.state.activeTab;
+    if (activeKey === -1) {
+      activeKey = Object.keys(this.props.llColumns)[0].id;
+      console.log(activeKey);
+    }
 
-    console.log(this.props);
+    console.log(this.state);
 
     return (
       <div>
@@ -184,6 +190,86 @@ class ProjectBoard extends React.Component {
             <Row>
               <Col className="projectName">{this.props.project.name}</Col>
             </Row>
+            <MediaQuery maxWidth={768}>
+              {matches => {
+                return matches ? (
+                  <div>
+                    <Row className="board-header" style={{ display: 'flex' }}>
+                      {Object.entries(this.props.llColumns).map(
+                        ([key, value]) => {
+                          return (
+                            <Col
+                              className={classnames({
+                                active: this.state.activeTab === key
+                              })}
+                              onClick={() => {
+                                this.toggleTab(key);
+                              }}
+                              // key={key}
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                padding: 0
+                              }}
+                            >
+                              <span
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center'
+                                }}
+                              >
+                                {this.props.llColumns[key] &&
+                                  this.props.llColumns[key].name}
+                                (
+                                {(this.props.llColumns[key] &&
+                                  this.props.llColumns[key].taskIds.length) ||
+                                  0}
+                                )
+                              </span>
+                            </Col>
+                          );
+                        }
+                      )}
+                    </Row>
+
+                    {this.props.llColumns[activeKey] && (
+                      <Column
+                        key={activeKey}
+                        columns={this.props.llColumns}
+                        id={activeKey}
+                        tickets={this.props.allTicketsObject}
+                        activetab={this.state.activeTab}
+                        allUsers={this.props.allUsers}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <Row
+                    className="board-container"
+                    style={{ display: 'flex', flexWrap: 'nowrap' }}
+                  >
+                    {Object.entries(this.props.llColumns).map(
+                      ([key, value], index) => {
+                        return (
+                          <Column
+                            key={key}
+                            columns={this.props.llColumns}
+                            id={key}
+                            tickets={this.props.allTicketsObject}
+                            tabId={index + 1}
+                            activetab={this.state.activeTab}
+                            allUsers={this.props.allUsers}
+                            toggleTab={this.toggleTab}
+                          />
+                        );
+                      }
+                    )}
+                  </Row>
+                );
+              }}
+            </MediaQuery>
+
+            {/*
             <Row className="board-header">
               {Object.entries(this.props.llColumns).map(([key, value]) => {
                 return (
@@ -220,7 +306,7 @@ class ProjectBoard extends React.Component {
                   );
                 }
               )}
-            </Row>
+            </Row> */}
           </DragDropContext>
         </Container>
       </div>
