@@ -5,7 +5,7 @@ import socket from '../socket';
 
 export const deleteColumn = column => ({
   type: ACTIONS.REMOVE_COLUMN,
-  ticket
+  column
 });
 
 export const createColumn = column => ({
@@ -70,7 +70,8 @@ export const removeColumnThunk = column => {
     try {
       await axios.delete(`/api/columns/${column.id}`);
       dispatch(deleteColumn(column));
-      // socket.emit('remove ticket', ticket.projectId, ticket);
+      console.log('COLUMN: ', column);
+      socket.emit('remove column', column.projectId, column);
     } catch (err) {
       console.log(err);
     }

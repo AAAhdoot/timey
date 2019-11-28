@@ -154,7 +154,7 @@ class Ticket extends Component {
                 >
                   <i className="fa fa-ellipsis-h" />
                 </DropdownToggle>
-                <DropdownMenu>
+                <DropdownMenu right>
                   <DropdownItem divider />
                   <DropdownItem onClick={this.handleClickOpen}>
                     Modify

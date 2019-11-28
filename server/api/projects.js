@@ -194,7 +194,11 @@ router.get('/:id/tickets', async (req, res, next) => {
                 include: User
               });
             }
-            llResult[columns[i].id] = { name: columns[i].name, linkedList };
+            llResult[columns[i].id] = {
+              name: columns[i].name,
+              linkedList,
+              projectId: Number(req.params.id)
+            };
           }
 
           result.llResult = llResult;

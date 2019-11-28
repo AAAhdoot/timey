@@ -129,8 +129,6 @@ class ProjectBoard extends React.Component {
       console.log(activeKey);
     }
 
-    console.log(this.state);
-
     return (
       <div>
         <Container className="project-board">
