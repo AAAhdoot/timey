@@ -8,7 +8,8 @@ const initialState = {
   ticket: {},
   allTickets: [],
   allTicketsObject: {},
-  llColumns: {}
+  llColumns: {},
+  column: {}
 };
 
 export default function(state = initialState, action) {
@@ -31,6 +32,7 @@ export default function(state = initialState, action) {
       newState.allTicketsObject = createTicketsObject(newState.allTickets);
       newState.llColumns = generateNewColumnsLL(action.payload.llResult);
       newState.ticket = {};
+      newState.column = {};
       return newState;
     case ACTIONS.UPDATE_TICKET:
       newState.allTickets = newState.allTickets.map(ticket => {
@@ -47,7 +49,6 @@ export default function(state = initialState, action) {
       newState.ticket = action.ticket;
       return newState;
     case ACTIONS.REORDER_TICKETS:
-      console.log(action.payload);
       newState.llColumns = action.payload;
       return newState;
     case ACTIONS.REMOVE_TICKET:
@@ -66,12 +67,18 @@ export default function(state = initialState, action) {
       let newColumn = {
         id: action.column.id,
         name: action.column.name,
-        taskIds: []
+        taskIds: [],
+        projectId: action.column.projectId
       };
       newState.llColumns = {
         ...newState.llColumns,
         [action.column.id]: newColumn
       };
+      newState.column = action.column;
+      return newState;
+    case ACTIONS.UPDATE_COLUMN:
+      newState.llColumns[action.column.id].name = action.column.name;
+      newState.column = action.column;
       return newState;
     case ACTIONS.REMOVE_COLUMN:
       newState.llColumns = Object.assign({}, newState.llColumns);

@@ -52,6 +52,10 @@ module.exports = io => {
       socket.broadcast.to(room).emit('new column', column);
     });
 
+    socket.on('update column', (room, column) => {
+      socket.broadcast.to(room).emit('update column', column);
+    });
+
     socket.on('remove column', (room, column) => {
       socket.broadcast.to(room).emit('remove column', column);
     });

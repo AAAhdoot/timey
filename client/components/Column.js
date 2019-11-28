@@ -49,10 +49,14 @@ class Column extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    this.props.update(this.props.ticket.id, this.props.ticket.projectId, {
-      title: this.state.title,
-      description: this.state.description
-    });
+    console.log('PROPS: ', this.props);
+    this.props.update(
+      Number(this.props.id),
+      this.props.columns[this.props.id].projectId,
+      {
+        name: this.state.name
+      }
+    );
     this.handleClose();
   }
 
@@ -70,14 +74,23 @@ class Column extends React.Component {
     this.setState({ open: false });
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.data.id !== this.props.data.id &&
+      Number(this.props.id) === this.props.data.id
+    ) {
+      this.setState({
+        name: this.props.data.name
+      });
+    }
+  }
+
   render() {
     const { columns, tickets, id, activetab, allUsers, toggleTab } = this.props;
 
     const div = {
       minHeight: '50px'
     };
-
-    console.log(columns[id]);
 
     return (
       <Col
@@ -91,16 +104,9 @@ class Column extends React.Component {
           display: 'flex',
           flexDirection: 'column',
           padding: 0
+          // width: '846px'
         }}
       >
-        {/* <span
-          style={{
-            display: 'flex',
-            justifyContent: 'center'
-          }}
-        >
-          {columns[id].name}
-        </span> */}
         <div className="ticketTitle-button-wrapper">
           {columns[id].name}
           <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
@@ -198,101 +204,10 @@ class Column extends React.Component {
   }
 }
 
-// const Column = ({ columns, tickets, id, activetab, allUsers, toggleTab }) => {
-//   const div = {
-//     minHeight: '50px'
-//   };
-
-//   return (
-//     <Col
-//       className={classnames({
-//         active: activetab === id
-//       })}
-//       onClick={() => {
-//         toggleTab(id);
-//       }}
-//       style={{
-//         display: 'flex',
-//         flexDirection: 'column',
-//         padding: 0
-//       }}
-//     >
-//       <div className="ticketTitle-button-wrapper">
-//         {columns[id].name}
-//         <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
-//           <DropdownToggle
-//             outline
-//             color="secondary"
-//             size="sm"
-//             className="custom-lineheight"
-//           >
-//             <i className="fa fa-ellipsis-h" />
-//           </DropdownToggle>
-//           <DropdownMenu>
-//             <DropdownItem divider />
-//             <DropdownItem onClick={this.handleClickOpen}>Modify</DropdownItem>
-//             <DropdownItem
-//               onClick={() => {
-//                 if (
-//                   window.confirm('Are you sure you want to delete this ticket?')
-//                 )
-//                   this.props.remove(ticket);
-//               }}
-//             >
-//               Remove
-//             </DropdownItem>
-//           </DropdownMenu>
-//         </ButtonDropdown>
-//       </div>
-//       {/* <span
-//         style={{
-//           display: 'flex',
-//           justifyContent: 'center'
-//         }}
-//       >
-//         {columns[id].name}
-//       </span> */}
-//       <Droppable droppableId={id} style={div}>
-//         {provided => (
-//           <Col className={activetab === columns[id].name ? 'show' : 'hide'}>
-//             <DroppableContainer
-//               provided={provided}
-//               innerRef={provided.innerRef}
-//             >
-//               {columns[id].taskIds.map((ticketId, index) => {
-//                 const ticket = tickets[ticketId];
-//                 return (
-//                   <Draggable
-//                     draggableId={ticket.id}
-//                     index={index}
-//                     key={ticket.id}
-//                   >
-//                     {provided => (
-//                       <Ticket
-//                         provided={provided}
-//                         innerRef={provided.innerRef}
-//                         ticket={ticket}
-//                         allUsers={allUsers}
-//                       />
-//                     )}
-//                   </Draggable>
-//                 );
-//               })}
-//               {provided.placeholder}
-//               <div style={div} />
-//             </DroppableContainer>
-//           </Col>
-//         )}
-//       </Droppable>
-//     </Col>
-//   );
-// };
-
 const mapStateToProps = state => {
   return {
-    data: state.ticket.ticket,
-    project: state.project.project,
-    user: state.user
+    data: state.ticket.column,
+    project: state.project.project
   };
 };
 
@@ -300,10 +215,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     remove: column => {
       dispatch(removeColumnThunk(column));
+    },
+    update: (id, projectId, column) => {
+      dispatch(updateColumnThunk(id, projectId, column));
     }
-    // update: (id, projectId, ticket) => {
-    //   dispatch(updateTicketThunk(id, projectId, ticket));
-    // },
   };
 };
 

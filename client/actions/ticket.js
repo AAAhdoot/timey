@@ -3,13 +3,18 @@ import * as ACTIONS from '../actions/action-types';
 import history from '../history';
 import socket from '../socket';
 
-export const deleteColumn = column => ({
-  type: ACTIONS.REMOVE_COLUMN,
+export const createColumn = column => ({
+  type: ACTIONS.CREATE_COLUMN,
   column
 });
 
-export const createColumn = column => ({
-  type: ACTIONS.CREATE_COLUMN,
+export const updateColumn = column => ({
+  type: ACTIONS.UPDATE_COLUMN,
+  column
+});
+
+export const deleteColumn = column => ({
+  type: ACTIONS.REMOVE_COLUMN,
   column
 });
 
@@ -78,6 +83,31 @@ export const removeColumnThunk = column => {
   };
 };
 
+export const updateColumnThunk = (id, projectId, column) => {
+  return async dispatch => {
+    try {
+      const { data: updatedColumn } = await axios.put(
+        `/api/columns/${id}`,
+        column
+      );
+
+      dispatch(updateColumn(updatedColumn));
+
+      // socket.emit('modify', projectId, {
+      //   id: updatedTicket.id,
+      //   title: updatedTicket.title,
+      //   description: updatedTicket.description
+      // });
+
+      console.log(projectId);
+
+      socket.emit('update column', projectId, updatedColumn);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
 export const createTicketThunk = (ticket, id) => {
   return async dispatch => {
     try {
@@ -113,7 +143,6 @@ export const getTicketThunk = ticketId => {
     }
   };
 };
-////////
 
 export const updateTicketThunk = (id, projectId, ticket) => {
   return async dispatch => {
