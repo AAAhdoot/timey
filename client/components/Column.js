@@ -1,18 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import {
-  Button,
-  Container,
-  Row,
   Col,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -31,33 +20,44 @@ class Column extends React.Component {
     super(props);
     this.state = {
       dropdownOpen: false,
-      open: false,
-      name: ''
+      columnName: this.props.columns[this.props.id].name,
+      editing: false
     };
     this.toggle = this.toggle.bind(this);
-    this.handleClickOpen = this.handleClickOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAnyClick = this.handleAnyClick.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleAnyClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleAnyClick);
+  }
+
+  handleAnyClick(event) {
+    if (this.state.editing && event.target.name !== 'columnName') {
+      this.setState({ editing: false });
+    }
+    if (this.state.columnName !== this.props.columns[this.props.id].name) {
+      this.props.update(
+        Number(this.props.id),
+        this.props.columns[this.props.id].projectId,
+        {
+          name: this.state.columnName
+        }
+      );
+    }
   }
 
   handleChange(event) {
+    if (event.target.name === 'columnName' && event.target.value.length === 0) {
+      return;
+    }
     this.setState({
       [event.target.name]: event.target.value
     });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    console.log('PROPS: ', this.props);
-    this.props.update(
-      Number(this.props.id),
-      this.props.columns[this.props.id].projectId,
-      {
-        name: this.state.name
-      }
-    );
-    this.handleClose();
   }
 
   toggle() {
@@ -66,12 +66,8 @@ class Column extends React.Component {
     });
   }
 
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
+  handleEdit = () => {
+    this.setState({ editing: true });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -103,12 +99,24 @@ class Column extends React.Component {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          padding: 0
-          // width: '846px'
+          padding: 0,
+          minWidth: '215px'
         }}
       >
         <div className="ticketTitle-button-wrapper">
-          {columns[id].name}
+          {this.state.editing ? (
+            <input
+              type="text"
+              name="columnName"
+              onChange={this.handleChange}
+              value={this.state.columnName}
+            ></input>
+          ) : (
+            <span style={{ minWidth: '173px' }} onDoubleClick={this.handleEdit}>
+              {columns[id].name}
+            </span>
+          )}
+
           <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
             <DropdownToggle
               outline
@@ -120,7 +128,6 @@ class Column extends React.Component {
             </DropdownToggle>
             <DropdownMenu right>
               <DropdownItem divider />
-              <DropdownItem onClick={this.handleClickOpen}>Modify</DropdownItem>
               <DropdownItem
                 disabled={columns[id].taskIds.length ? true : false}
                 onClick={() => {
@@ -136,35 +143,6 @@ class Column extends React.Component {
               </DropdownItem>
             </DropdownMenu>
           </ButtonDropdown>
-          <Dialog
-            open={this.state.open}
-            onClose={this.handleClose}
-            aria-labelledby="form-dialog-title"
-          >
-            <DialogTitle id="form-dialog-title">Update Column</DialogTitle>
-            <DialogContent>
-              <form onSubmit={this.handleSubmit}>
-                <label className="formLabel" htmlFor="title">
-                  Title:{' '}
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={this.state.name}
-                  onChange={this.handleChange}
-                />
-                <br />
-                <button id="submit" type="submit" disabled={!this.state.name}>
-                  Submit
-                </button>
-              </form>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleClose} color="primary">
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
         </div>
         {/* <hr /> */}
         <Droppable droppableId={id} style={div}>

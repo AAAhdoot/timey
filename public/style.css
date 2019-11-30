@@ -12,6 +12,11 @@ font-family: 'Open Sans', sans-serif;
 a {
   color: #54406b !important;
 }
+
+body {
+  overflow-x: hidden;
+}
+
 .title {
   font-family: 'Coiny', cursive;
 }
@@ -167,7 +172,7 @@ form div {
   flex-wrap: wrap;
 }
 /* project board desktop styles */
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 500px) {
   .board-container {
     min-height: 300px;
   }

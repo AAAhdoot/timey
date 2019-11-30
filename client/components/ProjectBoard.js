@@ -37,12 +37,17 @@ class ProjectBoard extends React.Component {
   constructor() {
     super();
     this.state = {
-      dropdownOpen: false,
+      projectDropdownOpen: false,
+      columnDropdownOpen: false,
+      graphDropdownOpen: false,
+      optionDropdownOpen: false,
       btnDropright: false,
       activeTab: -1
     };
-    this.toggle = this.toggle.bind(this);
-    this.userToggle = this.userToggle.bind(this);
+    this.projectToggle = this.projectToggle.bind(this);
+    this.columnToggle = this.columnToggle.bind(this);
+    this.graphToggle = this.graphToggle.bind(this);
+    this.optionToggle = this.optionToggle.bind(this);
     this.toggleTab = this.toggleTab.bind(this);
   }
 
@@ -67,16 +72,30 @@ class ProjectBoard extends React.Component {
     }
   }
 
-  toggle() {
-    this.setState({
-      dropdownOpen: !this.state.dropdownOpen
-    });
+  projectToggle() {
+    this.setState(prevState => ({
+      projectDropdownOpen: !prevState.projectDropdownOpen
+    }));
   }
-  userToggle() {
-    this.setState({
-      userDropdownOpen: !this.state.userDropdownOpen
-    });
+
+  columnToggle() {
+    this.setState(prevState => ({
+      columnDropdownOpen: !prevState.columnDropdownOpen
+    }));
   }
+
+  graphToggle() {
+    this.setState(prevState => ({
+      graphDropdownOpen: !prevState.graphDropdownOpen
+    }));
+  }
+
+  optionToggle() {
+    this.setState(prevState => ({
+      optionDropdownOpen: !prevState.optionDropdownOpen
+    }));
+  }
+
   toggleTab(tab) {
     if (this.state.activeTab !== tab) {
       this.setState({
@@ -126,108 +145,256 @@ class ProjectBoard extends React.Component {
     let activeKey = this.state.activeTab;
     if (activeKey === -1) {
       activeKey = Object.keys(this.props.llColumns)[0].id;
-      console.log(activeKey);
     }
 
     return (
       <div>
         <Container className="project-board">
-          <Row>
-            <Col sm={12} xs={12} md={6}>
-              <ButtonDropdown
-                isOpen={this.state.dropdownOpen}
-                toggle={this.toggle}
-              >
-                <DropdownToggle caret size="sm" color="info" className="abcd">
-                  {this.props.project.name}
-                </DropdownToggle>
-                <DropdownMenu>
-                  <DropdownItem header>Projects</DropdownItem>
-                  <DropdownItem divider />
-                  {this.props.projects.map(project => {
-                    return (
-                      <Link key={project.id} to={`/projects/${project.id}`}>
-                        <DropdownItem>{project.name}</DropdownItem>
-                      </Link>
-                    );
-                  })}
-                </DropdownMenu>
-              </ButtonDropdown>
-              <Link to={`/projects/${this.props.project.id}/ticketdata`}>
-                <Button color="info" size="sm" className="abcd">
-                  Users On Project
-                </Button>
-              </Link>
-              <Link to={`/timesheet`}>
-                <Button color="info" size="sm" className="abcd">
-                  Timesheets
-                </Button>
-              </Link>
-            </Col>
+          <MediaQuery minWidth={500}>
+            {matches => {
+              return matches ? (
+                <Row
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div style={{ display: 'flex' }}>
+                    <ButtonDropdown
+                      isOpen={this.state.projectDropdownOpen}
+                      toggle={this.projectToggle}
+                    >
+                      <DropdownToggle
+                        caret
+                        size="sm"
+                        color="info"
+                        className="abcd"
+                        name={'projectDropdownOpen'}
+                      >
+                        {this.props.project.name}
+                      </DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem header>Projects</DropdownItem>
+                        <DropdownItem divider />
+                        {this.props.projects.map(project => {
+                          return (
+                            <Link
+                              key={project.id}
+                              to={`/projects/${project.id}`}
+                            >
+                              <DropdownItem>{project.name}</DropdownItem>
+                            </Link>
+                          );
+                        })}
+                      </DropdownMenu>
+                    </ButtonDropdown>
 
-            <Col xs={12} sm={12} md={6} className="right-nav">
-              <Link to={`/projects/${this.props.project.id}/newcolumn`}>
-                <Button outline color="info" size="sm" className="abcde">
-                  New Column
-                </Button>
-              </Link>
-              <Link to={`/projects/${this.props.project.id}/newticket`}>
-                <Button outline color="info" size="sm" className="abcde">
-                  New Ticket
-                </Button>
-              </Link>
-              <Link to={`/projects/${this.props.project.id}/adduser`}>
-                <Button outline color="info" size="sm" className="abcde">
-                  Add User
-                </Button>
-              </Link>
-            </Col>
-          </Row>
+                    <ButtonDropdown
+                      isOpen={this.state.graphDropdownOpen}
+                      toggle={this.graphToggle}
+                    >
+                      <DropdownToggle
+                        caret
+                        size="sm"
+                        color="info"
+                        className="abcd"
+                        name={'graphDropdownOpen'}
+                      >
+                        Graphs & Timesheets
+                      </DropdownToggle>
+                      <DropdownMenu>
+                        <DropdownItem header>Graphs & Timesheets</DropdownItem>
+                        <DropdownItem divider />
+                        <Link
+                          to={`/projects/${this.props.project.id}/ticketdata`}
+                        >
+                          <DropdownItem>Users On Project</DropdownItem>
+                        </Link>
+                        <Link to={`/timesheet`}>
+                          <DropdownItem>Timesheets</DropdownItem>
+                        </Link>
+                      </DropdownMenu>
+                    </ButtonDropdown>
+                  </div>
+
+                  <div className="right-nav">
+                    <ButtonDropdown
+                      isOpen={this.state.optionDropdownOpen}
+                      toggle={this.optionToggle}
+                    >
+                      <DropdownToggle
+                        caret
+                        size="sm"
+                        color="info"
+                        className="abcd"
+                        name={'optionDropdownOpen'}
+                      >
+                        Options
+                      </DropdownToggle>
+                      <DropdownMenu right>
+                        <DropdownItem header>Options</DropdownItem>
+                        <DropdownItem divider />
+                        <Link
+                          to={`/projects/${this.props.project.id}/newcolumn`}
+                        >
+                          <DropdownItem>New Column</DropdownItem>
+                        </Link>
+                        <Link
+                          to={`/projects/${this.props.project.id}/newticket`}
+                        >
+                          <DropdownItem>New Ticket</DropdownItem>
+                        </Link>
+                        <Link to={`/projects/${this.props.project.id}/adduser`}>
+                          <DropdownItem>Add User</DropdownItem>
+                        </Link>
+                      </DropdownMenu>
+                    </ButtonDropdown>
+                  </div>
+                </Row>
+              ) : (
+                ''
+              );
+            }}
+          </MediaQuery>
 
           <DragDropContext onDragEnd={this.onDragEnd}>
             <Row>
               <Col className="projectName">{this.props.project.name}</Col>
             </Row>
-            <MediaQuery maxWidth={768}>
+            <MediaQuery maxWidth={500}>
               {matches => {
                 return matches ? (
                   <div>
-                    <Row className="board-header" style={{ display: 'flex' }}>
-                      {Object.entries(this.props.llColumns).map(
-                        ([key, value]) => {
-                          return (
-                            <Col
-                              className={classnames({
-                                active: this.state.activeTab === key
-                              })}
-                              onClick={() => {
-                                this.toggleTab(key);
-                              }}
-                              // key={key}
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                padding: 0
-                              }}
+                    <Row>
+                      <div style={{ display: 'flex' }}>
+                        <ButtonDropdown
+                          isOpen={this.state.projectDropdownOpen}
+                          toggle={this.projectToggle}
+                        >
+                          <DropdownToggle
+                            caret
+                            size="sm"
+                            color="info"
+                            className="abcd"
+                            name={'projectDropdownOpen'}
+                          >
+                            {this.props.project.name}
+                          </DropdownToggle>
+                          <DropdownMenu right>
+                            <DropdownItem header>Projects</DropdownItem>
+                            <DropdownItem divider />
+                            {this.props.projects.map(project => {
+                              return (
+                                <Link
+                                  key={project.id}
+                                  to={`/projects/${project.id}`}
+                                >
+                                  <DropdownItem>{project.name}</DropdownItem>
+                                </Link>
+                              );
+                            })}
+                          </DropdownMenu>
+                        </ButtonDropdown>
+
+                        <ButtonDropdown
+                          isOpen={this.state.graphDropdownOpen}
+                          toggle={this.graphToggle}
+                        >
+                          <DropdownToggle
+                            caret
+                            size="sm"
+                            color="info"
+                            className="abcd"
+                            name={'graphDropdownOpen'}
+                          >
+                            Graphs & Timesheets
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            <DropdownItem header>
+                              Graphs & Timesheets
+                            </DropdownItem>
+                            <DropdownItem divider />
+                            <Link
+                              to={`/projects/${this.props.project.id}/ticketdata`}
                             >
-                              <span
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center'
-                                }}
-                              >
-                                {this.props.llColumns[key] &&
-                                  this.props.llColumns[key].name}
-                                (
-                                {(this.props.llColumns[key] &&
-                                  this.props.llColumns[key].taskIds.length) ||
-                                  0}
-                                )
-                              </span>
-                            </Col>
-                          );
-                        }
-                      )}
+                              <DropdownItem>Users On Project</DropdownItem>
+                            </Link>
+                            <Link to={`/timesheet`}>
+                              <DropdownItem>Timesheets</DropdownItem>
+                            </Link>
+                          </DropdownMenu>
+                        </ButtonDropdown>
+                      </div>
+
+                      <div className="right-nav">
+                        <ButtonDropdown
+                          isOpen={this.state.optionDropdownOpen}
+                          toggle={this.optionToggle}
+                        >
+                          <DropdownToggle
+                            caret
+                            size="sm"
+                            color="info"
+                            className="abcd"
+                            name={'optionDropdownOpen'}
+                          >
+                            Options
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            <DropdownItem header>Options</DropdownItem>
+                            <DropdownItem divider />
+                            <Link
+                              to={`/projects/${this.props.project.id}/newcolumn`}
+                            >
+                              <DropdownItem>New Column</DropdownItem>
+                            </Link>
+                            <Link
+                              to={`/projects/${this.props.project.id}/newticket`}
+                            >
+                              <DropdownItem>New Ticket</DropdownItem>
+                            </Link>
+                            <Link
+                              to={`/projects/${this.props.project.id}/adduser`}
+                            >
+                              <DropdownItem>Add User</DropdownItem>
+                            </Link>
+                          </DropdownMenu>
+                        </ButtonDropdown>
+                      </div>
+                    </Row>
+                    <Row className="board-header" style={{ display: 'flex' }}>
+                      <ButtonDropdown
+                        isOpen={this.state.columnDropdownOpen}
+                        toggle={this.columnToggle}
+                      >
+                        <DropdownToggle
+                          caret
+                          size="sm"
+                          color="info"
+                          className="abcd"
+                          name={'columnDropdownOpen'}
+                        >
+                          {this.props.llColumns[activeKey]
+                            ? this.props.llColumns[activeKey].name
+                            : 'Select Column'}
+                        </DropdownToggle>
+                        <DropdownMenu>
+                          <DropdownItem header>Columns</DropdownItem>
+                          <DropdownItem divider />
+                          {Object.entries(this.props.llColumns).map(
+                            ([key, value]) => {
+                              return (
+                                <Link
+                                  key={key}
+                                  onClick={() => this.toggleTab(key)}
+                                >
+                                  <DropdownItem>{value.name}</DropdownItem>
+                                </Link>
+                              );
+                            }
+                          )}
+                        </DropdownMenu>
+                      </ButtonDropdown>
                     </Row>
 
                     {this.props.llColumns[activeKey] && (
@@ -238,16 +405,22 @@ class ProjectBoard extends React.Component {
                         tickets={this.props.allTicketsObject}
                         activetab={this.state.activeTab}
                         allUsers={this.props.allUsers}
+                        toggleTab={this.toggleTab}
                       />
                     )}
                   </div>
                 ) : (
                   <Row
                     className="board-container"
-                    style={{ display: 'flex', flexWrap: 'nowrap' }}
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'nowrap',
+                      overflowX: 'auto'
+                    }}
                   >
                     {Object.entries(this.props.llColumns).map(
                       ([key, value], index) => {
+                        console.log(value);
                         return (
                           <Column
                             key={key}
@@ -266,45 +439,6 @@ class ProjectBoard extends React.Component {
                 );
               }}
             </MediaQuery>
-
-            {/*
-            <Row className="board-header">
-              {Object.entries(this.props.llColumns).map(([key, value]) => {
-                return (
-                  <Col
-                    style={{ display: 'flex', justifyContent: 'center' }}
-                    className={classnames({
-                      active: this.state.activeTab === value.name
-                    })}
-                    onClick={() => {
-                      this.toggleTab(value.name);
-                    }}
-                    key={key}
-                  >
-                    {value.name}
-                    <span>({(value && value.taskIds.length) || 0})</span>
-                  </Col>
-                );
-              })}
-            </Row>
-
-            <Row className="board-container" activetab={this.state.activeTab}>
-              {Object.entries(this.props.llColumns).map(
-                ([key, value], index) => {
-                  return (
-                    <Column
-                      key={key}
-                      columns={this.props.llColumns}
-                      id={key}
-                      tickets={this.props.allTicketsObject}
-                      tabId={index + 1}
-                      activetab={this.state.activeTab}
-                      allUsers={this.props.allUsers}
-                    />
-                  );
-                }
-              )}
-            </Row> */}
           </DragDropContext>
         </Container>
       </div>
